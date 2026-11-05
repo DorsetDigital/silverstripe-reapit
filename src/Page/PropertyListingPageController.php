@@ -18,7 +18,7 @@ class PropertyListingPageController extends ContentController
     private static array $allowed_actions = ['view'];
 
     private static array $url_handlers = [
-        'view/$ID' => 'view',
+        '$Slug' => 'view',
     ];
 
     private const SORTS = [
@@ -67,20 +67,20 @@ class PropertyListingPageController extends ContentController
         return $this->getSortOptions()[$this->getSort()];
     }
 
-    public function getPropertyLink(int|string $id): string
+    public function getPropertyLink(string $slug): string
     {
-        return $this->Link('view/' . rawurlencode((string) $id));
+        return $this->Link(rawurlencode($slug));
     }
 
     public function view(HTTPRequest $request)
     {
-        $id = $request->param('ID');
-        if (!is_string($id) || !ctype_digit($id) || (int) $id < 1) {
+        $slug = $request->param('Slug');
+        if (!is_string($slug) || $slug === '' || !preg_match('/^[a-z0-9-]+$/', $slug)) {
             return $this->httpError(404);
         }
 
         $property = Property::get()->filter([
-            'ID' => (int) $id,
+            'Slug' => $slug,
             'Available' => true,
         ])->first();
 

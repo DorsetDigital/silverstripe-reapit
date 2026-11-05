@@ -20,12 +20,12 @@
             <% loop $Properties %>
                 <article class="reapit-property-card">
                     <% if $Images.First.Image %>
-                        <a href="$Top.PropertyLink($ID).ATT" class="reapit-property-card__image">
+                        <a href="$Top.PropertyLink($Slug).ATT" class="reapit-property-card__image">
                             <img src="$Images.First.Image.FocusFill(640,420).URL.ATT" alt="$Title.ATT" loading="lazy">
                         </a>
                     <% end_if %>
                     <div class="reapit-property-card__body">
-                        <h2><a href="$Top.PropertyLink($ID).ATT">$Title.XML</a></h2>
+                        <h2><a href="$Top.PropertyLink($Slug).ATT">$Title.XML</a></h2>
                         <% if $Address %><p>$Address.XML</p><% end_if %>
                         <% if $Rent %><p class="reapit-property-card__rent">&pound;$Rent.Nice <% if $RentFrequency %>/ $RentFrequency.XML<% end_if %></p><% end_if %>
                         <p>

@@ -34,6 +34,7 @@ class Property extends DataObject
     ];
 
     private static array $indexes = [
+        'SlugUnique' => ['type' => 'unique', 'columns' => ['Slug']],
         'RemoteReference' => ['type' => 'unique', 'columns' => ['CustomerID', 'ReapitID']],
         'VisibleAndDate' => ['columns' => ['Available', 'MarketingDate']],
     ];

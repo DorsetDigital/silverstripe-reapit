@@ -39,8 +39,10 @@ Schedule `DorsetDigital\Reapit\Job\PropertySyncJob` (e.g. hourly) and `DorsetDig
 ## Frontend page
 
 Create a **Property listings** page in the Silverstripe SiteTree. The module supplies a
-listing layout and a detail layout at `/your-page/view/{local-ID}`. These use local
+listing layout and a detail layout at `/your-page/{property-slug}`. These use local
 `Property` DataObjects only; no frontend API requests are made.
+
+Slugs are generated once on import, are unique across the local property table, and are retained when Reapit changes a listing's title. Existing records without slugs are backfilled by a subsequent import.
 
 The listing includes pagination and a whitelist of date/rent sorts, controlled by
 the `sort` query parameter. It shows only properties where `Available=true`.
