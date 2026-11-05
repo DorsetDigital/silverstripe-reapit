@@ -13,28 +13,28 @@ A one-way, read-only property import from Reapit Foundations for Silverstripe CM
 
 ## Installation
 
-\`\`\`bash
+```bash
 composer require dorsetdigital/silverstripe-reapit
 vendor/bin/sake dev/build flush=1
-\`\`\`
+```
 
 Set the following server-side environment variables (never commit credentials):
 
-\`\`\`dotenv
+```dotenv
 REAPIT_CLIENT_ID=
 REAPIT_CLIENT_SECRET=
 REAPIT_CUSTOMER_ID=SBOX
-\`\`\`
+```
 
-The client must install/authorise the application for access to its Reapit data. Use \`SBOX\` only for sandbox testing.
+The client must install/authorise the application for access to its Reapit data. Use `SBOX` only for sandbox testing.
 
 Run the initial import:
 
-\`\`\`bash
+```bash
 vendor/bin/sake dev/tasks/reapit-import
-\`\`\`
+```
 
-Schedule \`DorsetDigital\Reapit\Job\PropertySyncJob\` (e.g. hourly) and \`DorsetDigital\Reapit\Job\ReconcileJob\` (e.g. daily) through QueuedJobs. This module does not silently add jobs on every request.
+Schedule `DorsetDigital\Reapit\Job\PropertySyncJob` (e.g. hourly) and `DorsetDigital\Reapit\Job\ReconcileJob` (e.g. daily) through QueuedJobs. This module does not silently add jobs on every request.
 
 ## Design
 
