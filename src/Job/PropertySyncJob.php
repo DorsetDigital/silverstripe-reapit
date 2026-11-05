@@ -1,0 +1,35 @@
+<?php
+
+declare(strict_types=1);
+
+namespace DorsetDigital\Reapit\Job;
+
+use DorsetDigital\Reapit\Service\PropertySynchroniser;
+use SilverStripe\Core\Injector\Injector;
+use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
+use Symbiote\QueuedJobs\Services\QueuedJob;
+
+class PropertySyncJob extends AbstractQueuedJob
+{
+    public function getTitle(): string
+    {
+        return 'Synchronise Reapit properties';
+    }
+
+    public function getJobType(): int
+    {
+        return QueuedJob::QUEUED;
+    }
+
+    public function setup(): void
+    {
+        $this->totalSteps = 1;
+    }
+
+    public function process(): void
+    {
+        Injector::inst()->get(PropertySynchroniser::class)->import();
+        $this->currentStep = 1;
+        $this->isComplete = true;
+    }
+}

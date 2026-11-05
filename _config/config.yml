@@ -1,0 +1,7 @@
+---
+Name: dorsetdigital-reapit
+---
+SilverStripe\Core\Injector\Injector:
+  DorsetDigital\Reapit\Service\ApiClient:
+    constructor:
+      httpClient: '%$GuzzleHttp\Client'
