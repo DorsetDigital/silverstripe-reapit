@@ -40,7 +40,7 @@ class ApiClient
                 'api-version' => '2020-01-31',
                 'Accept' => 'application/json',
             ],
-            'query' => $query,
+            'query' => $this->encodeQuery($query),
             'timeout' => 30,
             'connect_timeout' => 10,
             'http_errors' => true,
@@ -74,6 +74,21 @@ class ApiClient
             $total = (int) ($result['totalPageCount'] ?? 0);
             $page++;
         } while ($page <= $total);
+    }
+
+    /**
+     * Reapit expects repeated query keys (lettingStatus=toLet&lettingStatus=tenancyCurrent)
+     * rather than PHP/Guzzle's indexed array convention.
+     */
+    private function encodeQuery(array $query): string
+    {
+        $parts = [];
+        foreach ($query as $key => $value) {
+            foreach (is_array($value) ? $value : [$value] as $item) {
+                $parts[] = rawurlencode((string) $key) . '=' . rawurlencode((string) $item);
+            }
+        }
+        return implode('&', $parts);
     }
 
     private function accessToken(): string
