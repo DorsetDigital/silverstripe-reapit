@@ -1,15 +1,15 @@
 # Silverstripe Reapit
 
-A one-way, read-only property import from Reapit Foundations for Silverstripe CMS 5 and 6.
+A one-way, read-only property import from Reapit Foundations for Silverstripe CMS 5. The code is structured to simplify a future CMS 6 upgrade.
 
 > **Development status:** initial backend foundation. Property images, production-grade incremental image syncing, frontend routes/templates and automated schedules are not yet implemented. Do not deploy as a completed website integration.
 
 ## Requirements
 
 - PHP 8.3+
-- Silverstripe framework 5 or 6
+- Silverstripe framework 5
 - Guzzle 7
-- QueuedJobs 5.3 or 6
+- QueuedJobs 5.3
 
 ## Installation
 
