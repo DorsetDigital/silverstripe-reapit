@@ -1,0 +1,6 @@
+---
+Name: dorsetdigital-reapit-schema
+---
+DorsetDigital\Reapit\Page\PropertyListingPage:
+  extensions:
+    - DorsetDigital\Reapit\Extension\PropertySchemaExtension

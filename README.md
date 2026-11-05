@@ -73,6 +73,32 @@ revisit a listing. Sitemap updates are not an alternative to the import job.
 For now, one published listing page is treated as the canonical owner of
 property detail links. Override \`Property::Link()\` for multi-site installations.
 
+## Optional Schema Manager integration
+
+If `dorsetdigital/silverstripe-schema-manager` is installed with the
+real-estate builders introduced in its `feature/real-estate-schema` branch,
+`PropertyListingPage` provides:
+
+- `CollectionPage` and a paginated `ItemList` on the listings page;
+- `RealEstateListing`, accommodation `PropertySchema` and rental `Offer`
+  on each property detail route;
+- stable property and offer identifiers, detail-page canonical IDs, rent,
+  bedrooms, bathrooms, address and locally imported images when present.
+
+The integration uses Schema Manager's existing page-level
+`updateSchemaManagerEntities` hook; no duplicate JSON-LD script is rendered.
+Nothing is emitted by this extension if Schema Manager isn't installed.
+Site-wide organisation/website entities remain managed by Schema Manager itself.
+
+Only available properties are included. Rental periods are mapped for known
+monthly, weekly and annual codes; unknown periods do not produce misleading
+rental prices. Currently GBP is assumed for rental offers, consistent with
+the UK lettings data model; a future multi-currency import will need to map
+the currency from Reapit.
+
+**The real-estate builders are currently in an unmerged Schema Manager PR.**
+These pages must be verified with that branch installed before release.
+
 ## Design
 
 - Reapit records use a composite customer ID and property ID key.
