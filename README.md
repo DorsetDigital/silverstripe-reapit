@@ -56,6 +56,23 @@ is required for basic sorting.
 The local image synchronisation is not yet implemented; listings without images
 will still render.
 
+## Optional Google Sitemaps integration
+
+If the host site uses \`wilr/silverstripe-googlesitemaps\` 3.x, the module
+automatically registers imported properties with the sitemap using a **daily**
+change frequency. The sitemap package is optional and is not installed by this
+module.
+
+The generated URLs use the first **published** PropertyListingPage and the
+property's stable slug. Withdrawn/unavailable properties, records without slugs,
+and properties without a published listing page are excluded.
+
+The \`daily\` frequency is a crawl hint, not a guarantee of when Google will
+revisit a listing. Sitemap updates are not an alternative to the import job.
+
+For now, one published listing page is treated as the canonical owner of
+property detail links. Override \`Property::Link()\` for multi-site installations.
+
 ## Design
 
 - Reapit records use a composite customer ID and property ID key.

@@ -18,5 +18,8 @@
     "expose": [
       "client/css"
     ]
+  },
+  "suggest": {
+    "wilr/silverstripe-googlesitemaps": "^3 for optional property sitemap entries on Silverstripe CMS 5"
   }
 }

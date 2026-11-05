@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace DorsetDigital\Reapit\Model;
 
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Control\Director;
+use SilverStripe\Versioned\Versioned;
+use DorsetDigital\Reapit\Page\PropertyListingPage;
 
 /**
  * Local read-only copy of a Reapit property.
@@ -44,6 +47,31 @@ class Property extends DataObject
     ];
 
     private static string $default_sort = '"MarketingDate" DESC, "ID" DESC';
+
+    /**
+     * Use the first published PropertyListingPage as the canonical frontend
+     * route. Sites with multiple listing pages can override this method.
+     */
+    public function Link(): ?string
+    {
+        if (!$this->Available || !$this->Slug) {
+            return null;
+        }
+
+        $page = Versioned::get_by_stage(PropertyListingPage::class, Versioned::LIVE)->first();
+        return $page ? $page->Link(rawurlencode((string) $this->Slug)) : null;
+    }
+
+    public function AbsoluteLink(): ?string
+    {
+        $link = $this->Link();
+        return $link !== null ? Director::absoluteURL($link) : null;
+    }
+
+    public function canView($member = null): bool
+    {
+        return $this->Link() !== null;
+    }
 
     public function canCreate($member = null, $context = []): bool
     {
