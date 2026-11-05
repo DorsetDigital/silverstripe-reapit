@@ -2,7 +2,7 @@
 
 A one-way, read-only property import from Reapit Foundations for Silverstripe CMS 5. The code is structured to simplify a future CMS 6 upgrade.
 
-> **Development status:** initial backend foundation. Property images, production-grade incremental image syncing, frontend routes/templates and automated schedules are not yet implemented. Do not deploy as a completed website integration.
+> **Development status:** initial backend foundation. Property images, production-grade incremental image syncing and automated schedules are not yet implemented. Frontend templates exist but are not yet integration-tested. Do not deploy as a completed website integration.
 
 ## Requirements
 
@@ -35,6 +35,24 @@ vendor/bin/sake dev/tasks/reapit-import
 ```
 
 Schedule `DorsetDigital\Reapit\Job\PropertySyncJob` (e.g. hourly) and `DorsetDigital\Reapit\Job\ReconcileJob` (e.g. daily) through QueuedJobs. This module does not silently add jobs on every request.
+
+## Frontend page
+
+Create a **Property listings** page in the Silverstripe SiteTree. The module supplies a
+listing layout and a detail layout at `/your-page/view/{local-ID}`. These use local
+`Property` DataObjects only; no frontend API requests are made.
+
+The listing includes pagination and a whitelist of date/rent sorts, controlled by
+the `sort` query parameter. It shows only properties where `Available=true`.
+
+The layouts in `templates/Layout/` are intentionally minimal defaults. Override
+them in the host project theme to use the site's existing CSS and component patterns.
+The module exposes its default stylesheet from `client/css/`. No JavaScript
+is required for basic sorting.
+
+**Important:** Image markup assumes imported `PropertyImage.Image` assets.
+The local image synchronisation is not yet implemented; listings without images
+will still render.
 
 ## Design
 

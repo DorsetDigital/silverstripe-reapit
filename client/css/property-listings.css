@@ -1,0 +1,17 @@
+/* Minimal defaults; site themes can override these selectors. */
+.reapit-properties,.reapit-property-detail{width:100%}
+.reapit-properties__sort{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin:1.5rem 0}
+.reapit-properties__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:1.5rem}
+.reapit-property-card{border:1px solid #ddd;border-radius:.25rem;overflow:hidden}
+.reapit-property-card__image{display:block;aspect-ratio:3/2;overflow:hidden}
+.reapit-property-card__image img{width:100%;height:100%;object-fit:cover}
+.reapit-property-card__body{padding:1rem}
+.reapit-property-card__body h2{font-size:1.2rem;margin:0 0 .5rem}
+.reapit-property-card__rent,.reapit-property-detail__rent{font-weight:700}
+.reapit-properties__pagination{display:flex;gap:1rem;align-items:center;justify-content:center;margin:2rem 0}
+.reapit-property-detail__gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:1rem}
+.reapit-property-detail__gallery figure{margin:0}
+.reapit-property-detail__gallery img{max-width:100%;height:auto;display:block}
+.reapit-property-detail__facts{display:flex;flex-wrap:wrap;gap:1.5rem;margin:1.5rem 0}
+.reapit-property-detail__facts div{display:flex;gap:.4rem}
+.reapit-property-detail__facts dt{font-weight:700}
