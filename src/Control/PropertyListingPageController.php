@@ -68,11 +68,6 @@ class PropertyListingPageController extends ContentController
         return $this->getSortOptions()[$this->getSort()];
     }
 
-    public function PropertyDetailLink(string $slug): string
-    {
-        return $this->Link(rawurlencode($slug));
-    }
-
     public function view(HTTPRequest $request)
     {
         $slug = $request->param('Slug');
