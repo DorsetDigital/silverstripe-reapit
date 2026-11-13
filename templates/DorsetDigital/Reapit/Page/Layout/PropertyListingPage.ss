@@ -19,11 +19,13 @@
         <div class="reapit-properties__grid">
             <% loop $Properties %>
                 <article class="reapit-property-card">
-                    <% if $Images.First.Image %>
-                        <a href="$Link.ATT" class="reapit-property-card__image">
+                    <a href="$Link.ATT" class="reapit-property-card__image">
+                        <% if $Images.First.Image %>
                             <img src="$Images.First.Image.Fill(640,420).URL.ATT" alt="$Title.ATT" loading="lazy">
-                        </a>
-                    <% end_if %>
+                        <% else %>
+                            <img src="$resourceURL('dorsetdigital/silverstripe-reapit:client/images/placeholder-640x420.svg')" alt="" loading="lazy" width="640" height="420">
+                        <% end_if %>
+                    </a>
                     <div class="reapit-property-card__body">
                         <h2><a href="$Link.ATT">$Title.XML</a></h2>
                         <% if $Address %><p>$Address.XML</p><% end_if %>

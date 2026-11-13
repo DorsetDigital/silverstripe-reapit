@@ -16,7 +16,8 @@
   },
   "extra": {
     "expose": [
-      "client/css"
+      "client/css",
+      "client/images"
     ]
   },
   "suggest": {
