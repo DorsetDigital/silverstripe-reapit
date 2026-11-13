@@ -16,7 +16,16 @@ class ImportPropertiesTask extends BuildTask
 
     public function run($request): void
     {
-        $count = Injector::inst()->get(PropertySynchroniser::class)->import(true);
-        echo "Imported {$count} Reapit properties\n";
+        $value = $request->getVar('limit');
+        $limit = null;
+        if ($value !== null && $value !== '') {
+            if (!is_scalar($value) || !ctype_digit((string) $value) || (int) $value < 1) {
+                throw new \InvalidArgumentException('limit must be a positive integer.');
+            }
+            $limit = (int) $value;
+        }
+
+        $count = Injector::inst()->get(PropertySynchroniser::class)->import(true, $limit);
+        echo "Imported {$count} Reapit properties" . ($limit === null ? "" : " (test limit: {$limit}; checkpoint unchanged)") . "\n";
     }
 }

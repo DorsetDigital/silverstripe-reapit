@@ -21,8 +21,12 @@ class PropertySynchroniser
     ) {
     }
 
-    public function import(bool $full = false): int
+    public function import(bool $full = false, ?int $maxProperties = null): int
     {
+        if ($maxProperties !== null && $maxProperties < 1) {
+            throw new \InvalidArgumentException('Property import limit must be a positive integer.');
+        }
+
         $customer = $this->api->customerId();
         $state = SyncState::get()->filter(['CustomerID' => $customer, 'Channel' => 'properties'])->first();
         if (!$state) {
@@ -40,7 +44,7 @@ class PropertySynchroniser
         }
 
         $count = 0;
-        foreach ($this->api->pages('/properties', $query) as $page) {
+        foreach ($this->api->pages('/properties', $query, $maxProperties) as $page) {
             foreach ($page as $remote) {
                 if (!is_array($remote) || empty($remote['id'])) {
                     continue;
@@ -58,8 +62,12 @@ class PropertySynchroniser
                 $count++;
             }
         }
-        $state->LastSuccessful = $started;
-        $state->write();
+        // A limited run may not have seen every record. It must not advance
+        // the incremental checkpoint or interfere with subsequent full syncs.
+        if ($maxProperties === null) {
+            $state->LastSuccessful = $started;
+            $state->write();
+        }
 
         return $count;
     }

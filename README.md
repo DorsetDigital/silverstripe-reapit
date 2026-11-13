@@ -34,6 +34,27 @@ Run the initial import:
 vendor/bin/sake dev/tasks/reapit-import
 ```
 
+For development, limit the **total number of properties** fetched and written:
+
+```bash
+vendor/bin/sake 'dev/tasks/reapit-import?limit=100'
+```
+
+Or visit `/dev/tasks/reapit-import?limit=100` in a development browser.
+The importer still uses API pages of **at most 100** records; `limit=25`
+requests just 25, while `limit=250` requests up to three pages.
+
+A limited run does **not** advance `LastSuccessful`, because it is not a
+complete sync. Recurring property and reconciliation jobs are always unlimited
+and are **not suitable for scoped sandbox testing**. Do not enable them until
+you are ready to synchronise the entire configured dataset. Removing the limit
+restores normal import behaviour.
+
+This limit restricts API retrieval, not the number of records already stored
+locally. A test database with 4,943 imported properties will retain those
+records unless they are separately cleared.
+
+
 Schedule `DorsetDigital\Reapit\Job\PropertySyncJob` (e.g. hourly) and `DorsetDigital\Reapit\Job\ReconcileJob` (e.g. daily) through QueuedJobs. This module does not silently add jobs on every request.
 
 ## Frontend page

@@ -57,23 +57,34 @@ class ApiClient
     /**
      * Iterate through every page; errors propagate so failed imports cannot be marked complete.
      */
-    public function pages(string $path, array $query = []): iterable
+    public function pages(string $path, array $query = [], ?int $maxResults = null): iterable
     {
+        if ($maxResults !== null && $maxResults < 1) {
+            throw new \InvalidArgumentException('The maximum result count must be positive.');
+        }
+
         $page = 1;
+        $received = 0;
         do {
+            $pageSize = min(100, $maxResults === null ? 100 : $maxResults - $received);
             $result = $this->get($path, array_merge($query, [
-                'pageSize' => 100,
+                'pageSize' => $pageSize,
                 'pageNumber' => $page,
             ]));
             $embedded = $result['_embedded'] ?? [];
-            if (!is_array($embedded)) {
+            if (!is_array($embedded) || !array_is_list($embedded)) {
                 throw new RuntimeException('Malformed Reapit collection');
             }
-            // Collection endpoints return a list in _embedded, rather than a dictionary.
-            yield $embedded;
+
+            // A limit is a total across all pages, not the number of pages.
+            // The final page may be shorter than the requested page size.
+            $batch = array_slice($embedded, 0, $maxResults === null ? null : $maxResults - $received);
+            $received += count($batch);
+            yield $batch;
+
             $total = (int) ($result['totalPageCount'] ?? 0);
             $page++;
-        } while ($page <= $total);
+        } while ($page <= $total && ($maxResults === null || $received < $maxResults));
     }
 
     /**
