@@ -74,10 +74,10 @@ class PropertySynchroniser
                     $embedded = $remote['_embedded'] ?? null;
                     // A missing image collection is not proof that there are
                     // zero images. Never prune locally stored images on that basis.
-                    if (is_array($embedded) && array_key_exists('images', $embedded)) {
+                    if (is_array($embedded) && isset($embedded['images'])) {
                         $images = $embedded['images'];
                         if (!is_array($images) || !array_is_list($images)) {
-                            throw new \RuntimeException('Malformed embedded Reapit image collection.');
+                            throw new \RuntimeException('Malformed embedded Reapit image collection for property ' . $property->ReapitID);
                         }
                         $this->imageSynchroniser->sync($property, $images, false);
                     } elseif (!empty($remote['featuredImageUrl'])) {
