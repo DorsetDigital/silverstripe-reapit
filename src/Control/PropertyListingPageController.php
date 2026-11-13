@@ -67,6 +67,18 @@ class PropertyListingPageController extends \PageController
         return $this->getSortOptions()[$this->getSort()];
     }
 
+    /**
+     * The host site may use an optional SEOTitle field in its Page.ss template.
+     * On detail URLs it must not retain the listing page's SEO title.
+     */
+    public function getSEOTitle(): ?string
+    {
+        $page = $this->data();
+        $property = $page->getPropertyContext();
+
+        return $property ? $property->getMetaTitle() : $page->SEOTitle;
+    }
+
     public function view(HTTPRequest $request)
     {
         $slug = $request->param('Slug');
@@ -82,6 +94,10 @@ class PropertyListingPageController extends \PageController
         if (!$property) {
             return $this->httpError(404);
         }
+
+        // Update only the in-memory SiteTree record for this detail request.
+        // MetaTags(false) and site-level metadata extensions then see property data.
+        $this->data()->setPropertyContext($property);
 
         // Returning customised page data preserves the normal SiteTree layout.
         // Silverstripe selects PropertyListingPage_view.ss for this action.

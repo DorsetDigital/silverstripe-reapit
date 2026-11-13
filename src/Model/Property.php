@@ -70,6 +70,23 @@ class Property extends DataObject
         return $page ? $page->Link(rawurlencode((string) $this->Slug)) : null;
     }
 
+    public function getMetaTitle(): string
+    {
+        return (string) $this->Title;
+    }
+
+    public function getMetaDescription(): string
+    {
+        foreach ([$this->Summary, $this->Description, $this->LongDescription] as $value) {
+            $text = trim(preg_replace('/\\s+/u', ' ', html_entity_decode(strip_tags((string) $value), ENT_QUOTES | ENT_HTML5, 'UTF-8')) ?? '');
+            if ($text !== '') {
+                return mb_substr($text, 0, 160);
+            }
+        }
+
+        return '';
+    }
+
     public function AbsoluteLink(): ?string
     {
         $link = $this->Link();
