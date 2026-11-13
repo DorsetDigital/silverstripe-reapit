@@ -37,10 +37,12 @@ vendor/bin/sake dev/tasks/reapit-import
 For development, limit the **total number of properties** fetched and written:
 
 ```bash
-vendor/bin/sake 'dev/tasks/reapit-import?limit=100'
+vendor/bin/sake dev/tasks/reapit-import "limit=100"
 ```
 
-Or visit `/dev/tasks/reapit-import?limit=100` in a development browser.
+For browser execution, visit `/dev/tasks/reapit-import?limit=100`.
+Silverstripe CMS 5 passes command-line parameters as a separate sake argument,
+not as a query string embedded in the task route.
 The importer still uses API pages of **at most 100** records; `limit=25`
 requests just 25, while `limit=250` requests up to three pages.
 
