@@ -68,6 +68,16 @@ customer's actual property image structure:
 vendor/bin/sake dev/tasks/reapit-inspect-images "limit=10"
 ```
 
+To inspect a specific property known to have a featured image, run:
+
+```bash
+vendor/bin/sake dev/tasks/reapit-inspect-images "propertyId=YOUR_PROPERTY_ID"
+```
+
+The targeted inspection checks both the embedded images and the
+`/propertyImages` collection for that property. It performs two read-only API
+requests. The task also supports an untargeted sample using `limit=10`.
+
 The task requests `embed=images`, prints the first image record it finds,
 and makes no database or asset changes. The limit is capped at 20 properties.
 Embedding images can incur additional Reapit API usage charges.
