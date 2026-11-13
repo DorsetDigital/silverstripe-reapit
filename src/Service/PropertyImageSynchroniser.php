@@ -70,9 +70,13 @@ class PropertyImageSynchroniser
                 $safe = preg_replace('/[^a-zA-Z0-9_-]/', '-', $property->CustomerID . '-' . $property->ReapitID . '-' . $id);
                 $image->setFromString($bytes, 'reapit-' . $safe . '.' . $extension);
                 $image->write();
-                $image->publishFile();
+                $image->publishSingle();
                 $record->ImageID = $image->ID;
                 $downloaded++;
+            } elseif (!$record->Image()->isPublished()) {
+                // Repair images imported before their database records were published.
+                // This uses the existing asset without fetching it from Reapit again.
+                $record->Image()->publishSingle();
             }
 
             $record->PropertyID = $property->ID;
