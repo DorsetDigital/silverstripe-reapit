@@ -43,7 +43,7 @@ class PropertyListingPage extends \Page
         return $this->propertyContext;
     }
 
-    public function AbsoluteLink(string $action = null): string
+    public function AbsoluteLink($action = null)
     {
         if ($this->propertyContext !== null && $action === null) {
             return parent::AbsoluteLink($this->propertyContext->Slug);
