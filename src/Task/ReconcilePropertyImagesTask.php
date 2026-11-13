@@ -58,7 +58,7 @@ class ReconcilePropertyImagesTask extends BuildTask
             $result['downloaded']
         );
         foreach ($result['removals'] as $propertyId => $ids) {
-            echo $propertyId . ': would remove ' . implode(', ', $ids) . "\n";
+            echo $propertyId . ($apply === '1' ? ': removed ' : ': would remove ') . implode(', ', $ids) . "\n";
         }
     }
 }
