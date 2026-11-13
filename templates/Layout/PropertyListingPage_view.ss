@@ -14,6 +14,7 @@
                         <% if $Image %>
                             <figure>
                                 <img src="$Image.ScaleMaxWidth(1200).URL.ATT" alt="$Up.Title.ATT" loading="lazy">
+                                <% if $Caption %><figcaption>$Caption.XML</figcaption><% end_if %>
                             </figure>
                         <% end_if %>
                     <% end_loop %>
@@ -26,7 +27,13 @@
                 <% if $LettingStatus %><div><dt>Status</dt><dd>$LettingStatus.XML</dd></div><% end_if %>
             </dl>
 
-            <% if $Description %>
+            <% if $Summary %>
+                <p class="reapit-property-detail__summary">$Summary.XML</p>
+            <% end_if %>
+
+            <% if $LongDescription %>
+                <div class="reapit-property-detail__description">$LongDescription</div>
+            <% else_if $Description %>
                 <div class="reapit-property-detail__description">$Description</div>
             <% end_if %>
         </article>
