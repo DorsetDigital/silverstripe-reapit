@@ -20,8 +20,6 @@ class PropertyMapper
         $address = is_array($address) ? $address : [];
         $letting = $remote['letting'] ?? [];
         $letting = is_array($letting) ? $letting : [];
-        $price = $letting['rent'] ?? null;
-        $price = is_array($price) ? $price : [];
 
         $street = array_filter([
             $address['buildingName'] ?? null,
@@ -38,8 +36,8 @@ class PropertyMapper
         $property->Description = (string) ($remote['marketing']['description'] ?? '');
         $property->Bedrooms = (int) ($remote['bedrooms'] ?? 0);
         $property->Bathrooms = (int) ($remote['bathrooms'] ?? 0);
-        $property->Rent = (float) ($price['amount'] ?? 0);
-        $property->RentFrequency = (string) ($price['frequency'] ?? '');
+        $property->Rent = is_numeric($letting['rent'] ?? null) ? (float) $letting['rent'] : 0;
+        $property->RentFrequency = (string) ($letting['rentFrequency'] ?? '');
         $property->LettingStatus = (string) ($letting['status'] ?? '');
         $property->RemoteModified = self::date($remote['modified'] ?? null);
         $property->MarketingDate = self::date($remote['marketing']['date'] ?? $remote['created'] ?? null);
