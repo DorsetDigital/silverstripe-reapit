@@ -158,6 +158,36 @@ separate, complete per-property reconciliation; this job never deletes local
 assets. An image changed while the job runs will be picked up by the next
 run's overlapping modification window.
 
+## Full image reconciliation (deletions)
+
+Incremental image updates do not reveal deletions reliably. For a complete,
+per-property comparison against `/propertyImages`, run a **read-only dry run**:
+
+```bash
+ddev sake dev/tasks/reapit-reconcile-images "propertyId=MKT265922"
+```
+
+The task retrieves every image page, validates Reapit's reported total count
+and page count, and lists locally stored IDs absent from the remote inventory.
+It does not change the database or download/delete assets in dry-run mode.
+
+To reconcile one property after reviewing the dry-run output:
+
+```bash
+ddev sake dev/tasks/reapit-reconcile-images "propertyId=MKT265922&apply=1"
+```
+
+An applied run downloads changed/new images and removes obsolete imported
+image records and their module-managed assets. You can instead use `limit=10`
+or `limit=100` for bounded testing. The default is a ten-property dry run.
+`all=1` explicitly allows all local available properties; this performs
+one or more API requests **per property** and may be costly. Unlike the
+incremental feed, full reconciliation is intentionally not frequent.
+
+`PropertyImageReconcileJob` is available but **not scheduled automatically**.
+Only schedule it after testing against the customer dataset and assessing API
+usage. It runs an applied reconciliation across every available property.
+
 ## Frontend page
 
 Create a **Property listings** page in the Silverstripe SiteTree. The module supplies a
