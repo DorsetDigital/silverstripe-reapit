@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace DorsetDigital\Reapit\Service;
 
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\GuzzleException;
 use RuntimeException;
 use SilverStripe\Core\Environment;
 
