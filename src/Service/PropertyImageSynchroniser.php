@@ -79,12 +79,13 @@ class PropertyImageSynchroniser
                 $downloaded++;
             } else {
                 $image = $record->Image();
-                if ($image->ParentID != $folder->ID) {
+                $moved = $image->ParentID != $folder->ID;
+                if ($moved) {
                     // Move existing imports through the asset API, retaining their IDs.
                     $image->ParentID = $folder->ID;
                     $image->write();
                 }
-                if (!$image->isPublished() || $image->isChanged()) {
+                if ($moved || !$image->isPublished()) {
                     $image->publishSingle();
                 }
             }
