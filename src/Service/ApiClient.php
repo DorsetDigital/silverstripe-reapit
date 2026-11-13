@@ -65,8 +65,10 @@ class ApiClient
 
         $page = 1;
         $received = 0;
+        // A stable page size is essential: changing it mid-pagination shifts
+        // pageNumber offsets and can skip or duplicate property records.
+        $pageSize = min(100, $maxResults ?? 100);
         do {
-            $pageSize = min(100, $maxResults === null ? 100 : $maxResults - $received);
             $result = $this->get($path, array_merge($query, [
                 'pageSize' => $pageSize,
                 'pageNumber' => $page,
