@@ -83,7 +83,7 @@ class PropertyListingPageController extends \PageController
      * The outer Page.ss template resolves AbsoluteLink() on the controller
      * before the SiteTree record. Use the detail URL only for property requests.
      */
-    public function AbsoluteLink(string $action = ''): ?string
+    public function AbsoluteLink($action = '')
     {
         $page = $this->data();
         if ($action === '' && $page->getPropertyContext() !== null) {
