@@ -19,22 +19,25 @@
         <div class="reapit-properties__grid">
             <% loop $Properties %>
                 <article class="reapit-property-card">
-                    <a href="$Link.ATT" class="reapit-property-card__image">
-                        <% if $Images.First.Image %>
-                            <img src="$Images.First.Image.Fill(640,420).URL.ATT" alt="$Title.ATT" loading="lazy">
-                        <% else %>
-                            <img src="$resourceURL('dorsetdigital/silverstripe-reapit:client/images/placeholder-640x420.svg')" alt="" loading="lazy" width="640" height="420">
-                        <% end_if %>
+                    <a href="$Link.ATT" class="reapit-property-card__link" aria-label="View property: $Title.ATT">
+                        <div class="reapit-property-card__image">
+                            <% if $Images.First.Image %>
+                                <img src="$Images.First.Image.Fill(640,420).URL.ATT" alt="" loading="lazy">
+                            <% else %>
+                                <img src="$resourceURL('dorsetdigital/silverstripe-reapit:client/images/placeholder-640x420.svg')" alt="" loading="lazy" width="640" height="420">
+                            <% end_if %>
+                        </div>
+                        <div class="reapit-property-card__body">
+                            <h2>$Title.XML</h2>
+                            <% if $Address %><p>$Address.XML</p><% end_if %>
+                            <% if $Rent %><p class="reapit-property-card__rent">&pound;$Rent.Nice <% if $RentFrequency %>/ $RentFrequency.XML<% end_if %></p><% end_if %>
+                            <p>
+                                <% if $Bedrooms %>$Bedrooms bedroom<% if $Bedrooms != 1 %>s<% end_if %><% end_if %>
+                                <% if $Bathrooms %> · $Bathrooms bathroom<% if $Bathrooms != 1 %>s<% end_if %><% end_if %>
+                            </p>
+                            <span class="reapit-property-card__cta">View property</span>
+                        </div>
                     </a>
-                    <div class="reapit-property-card__body">
-                        <h2><a href="$Link.ATT">$Title.XML</a></h2>
-                        <% if $Address %><p>$Address.XML</p><% end_if %>
-                        <% if $Rent %><p class="reapit-property-card__rent">&pound;$Rent.Nice <% if $RentFrequency %>/ $RentFrequency.XML<% end_if %></p><% end_if %>
-                        <p>
-                            <% if $Bedrooms %>$Bedrooms bedroom<% if $Bedrooms != 1 %>s<% end_if %><% end_if %>
-                            <% if $Bathrooms %> · $Bathrooms bathroom<% if $Bathrooms != 1 %>s<% end_if %><% end_if %>
-                        </p>
-                    </div>
                 </article>
             <% end_loop %>
         </div>
