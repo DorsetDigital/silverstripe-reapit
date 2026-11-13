@@ -82,6 +82,22 @@ The task requests `embed=images`, prints the first image record it finds,
 and makes no database or asset changes. The limit is capped at 20 properties.
 Embedding images can incur additional Reapit API usage charges.
 
+## Import images for a single property (development)
+
+After confirming its API image payload and importing the corresponding
+property locally, download its images into Silverstripe's asset store:
+
+```bash
+vendor/bin/sake dev/tasks/reapit-import-images "propertyId=MKT265922"
+```
+
+This reads the complete `/propertyImages` collection (up to 100 records),
+downloads only new or changed images, writes them as public Silverstripe
+`Image` assets, and updates ordering and captions. It refuses a partial
+multi-page response rather than deleting images based on incomplete data.
+The task is intentionally scoped to **one property**. Global scheduled image
+synchronisation is not enabled yet; the import needs integration testing first.
+
 ## Frontend page
 
 Create a **Property listings** page in the Silverstripe SiteTree. The module supplies a

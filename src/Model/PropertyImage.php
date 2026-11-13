@@ -14,6 +14,8 @@ class PropertyImage extends DataObject
     private static array $db = [
         'ReapitID' => 'Varchar(100)',
         'RemoteURL' => 'Text',
+        'ReapitETag' => 'Varchar(255)',
+        'Caption' => 'Varchar(255)',
         'Position' => 'Int',
     ];
 
