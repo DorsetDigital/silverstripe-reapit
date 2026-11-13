@@ -104,7 +104,8 @@ class PropertyImageSynchroniser
         if (!is_array($parts)
             || ($parts['scheme'] ?? '') !== 'https'
             || strtolower($parts['host'] ?? '') !== 'assets.reapit.net'
-            || isset($parts['user'], $parts['pass'])
+            || isset($parts['user'])
+            || isset($parts['pass'])
             || isset($parts['port'])
         ) {
             return false;
@@ -129,7 +130,11 @@ class PropertyImageSynchroniser
         $bytes = '';
         $maxBytes = 15 * 1024 * 1024;
         while (!$stream->eof()) {
-            $bytes .= $stream->read(min(65536, $maxBytes + 1 - strlen($bytes)));
+            $chunk = $stream->read(min(65536, $maxBytes + 1 - strlen($bytes)));
+            if ($chunk === '' && !$stream->eof()) {
+                throw new RuntimeException('Reapit image download stalled.');
+            }
+            $bytes .= $chunk;
             if (strlen($bytes) > $maxBytes) {
                 throw new RuntimeException('Reapit image exceeds the 15 MiB limit.');
             }
