@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace DorsetDigital\Reapit\Control;
 
 use DorsetDigital\Reapit\Model\Property;
-use SilverStripe\CMS\Controllers\ContentController;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\ORM\PaginatedList;
 use SilverStripe\View\Requirements;
@@ -13,7 +12,7 @@ use SilverStripe\View\Requirements;
 /**
  * Frontend display only. Never calls the Reapit API from a web request.
  */
-class PropertyListingPageController extends ContentController
+class PropertyListingPageController extends \PageController
 {
     private static array $allowed_actions = ['view'];
 
