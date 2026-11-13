@@ -33,7 +33,7 @@ class PropertyMapper
         $property->Address = implode(', ', $street);
         $strapline = self::nonEmptyText($remote['strapline'] ?? null);
         $property->Title = $strapline
-            ?? ($property->Address !== '' ? 'Property at ' . $property->Address : 'Property ' . (string) ($remote['id'] ?? ''));
+            ?? ($property->Address !== '' ? $property->Address : (string) ($remote['id'] ?? ''));
         $property->Summary = self::nonEmptyText($remote['summary'] ?? null) ?? '';
         $property->Description = self::nonEmptyText($remote['description'] ?? null) ?? '';
         $property->LongDescription = self::nonEmptyText($remote['longDescription'] ?? null) ?? '';
