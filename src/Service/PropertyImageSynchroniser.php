@@ -8,6 +8,7 @@ use DorsetDigital\Reapit\Model\Property;
 use DorsetDigital\Reapit\Model\PropertyImage;
 use GuzzleHttp\ClientInterface;
 use RuntimeException;
+use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Image;
 
 /**
@@ -30,6 +31,8 @@ class PropertyImageSynchroniser
         if (!$property->isInDB()) {
             throw new RuntimeException('Save the property before synchronising its images.');
         }
+
+        $folder = Folder::find_or_make('Reapit');
 
         $existing = [];
         foreach ($property->Images() as $record) {
@@ -67,16 +70,23 @@ class PropertyImageSynchroniser
                 $bytes = $this->download($url);
                 $extension = strtolower(pathinfo((string) parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION));
                 $image = $record->ImageID ? $record->Image() : Image::create();
+                $image->ParentID = $folder->ID;
                 $safe = preg_replace('/[^a-zA-Z0-9_-]/', '-', $property->CustomerID . '-' . $property->ReapitID . '-' . $id);
                 $image->setFromString($bytes, 'reapit-' . $safe . '.' . $extension);
                 $image->write();
                 $image->publishSingle();
                 $record->ImageID = $image->ID;
                 $downloaded++;
-            } elseif (!$record->Image()->isPublished()) {
-                // Repair images imported before their database records were published.
-                // This uses the existing asset without fetching it from Reapit again.
-                $record->Image()->publishSingle();
+            } else {
+                $image = $record->Image();
+                if ($image->ParentID != $folder->ID) {
+                    // Move existing imports through the asset API, retaining their IDs.
+                    $image->ParentID = $folder->ID;
+                    $image->write();
+                }
+                if (!$image->isPublished() || $image->isChanged()) {
+                    $image->publishSingle();
+                }
             }
 
             $record->PropertyID = $property->ID;
