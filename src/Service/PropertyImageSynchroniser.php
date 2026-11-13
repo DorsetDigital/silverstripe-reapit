@@ -87,12 +87,8 @@ class PropertyImageSynchroniser
         // Only prune after the entire remote collection has been handled successfully.
         foreach ($existing as $id => $record) {
             if ($pruneMissing && !isset($seen[$id])) {
-                $image = $record->ImageID ? $record->Image() : null;
+                // PropertyImage::onAfterDelete owns the asset cleanup.
                 $record->delete();
-                if ($image && $image->exists()) {
-                    $image->deleteFile();
-                    $image->delete();
-                }
             }
         }
 

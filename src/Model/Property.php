@@ -50,6 +50,10 @@ class Property extends DataObject
         'Images' => PropertyImage::class,
     ];
 
+    private static array $cascade_deletes = [
+        'Images',
+    ];
+
     private static string $default_sort = '"MarketingDate" DESC, "ID" DESC';
 
     /**
