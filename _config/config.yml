@@ -5,3 +5,7 @@ SilverStripe\Core\Injector\Injector:
   DorsetDigital\Reapit\Service\ApiClient:
     constructor:
       httpClient: '%$GuzzleHttp\Client'
+  DorsetDigital\Reapit\Service\PropertySynchroniser:
+    constructor:
+      api: '%$DorsetDigital\Reapit\Service\ApiClient'
+      mapper: '%$DorsetDigital\Reapit\Service\PropertyMapper'
