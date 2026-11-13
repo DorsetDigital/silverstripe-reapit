@@ -79,7 +79,7 @@ class PropertySynchroniser
                         if (!is_array($images) || !array_is_list($images)) {
                             throw new \RuntimeException('Malformed embedded Reapit image collection.');
                         }
-                        $this->imageSynchroniser->sync($property, $images);
+                        $this->imageSynchroniser->sync($property, $images, false);
                     } elseif (!empty($remote['featuredImageUrl'])) {
                         throw new \RuntimeException(
                             'Reapit omitted embedded images for property ' . $property->ReapitID
