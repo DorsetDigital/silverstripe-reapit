@@ -82,9 +82,6 @@ class PropertyListingPageController extends \PageController
     public function view(HTTPRequest $request)
     {
         $slug = $request->param('Slug');
-        if (!is_string($slug) || $slug === '' || !preg_match('/^[a-z0-9-]+$/', $slug)) {
-            return $this->httpError(404);
-        }
 
         $property = Property::get()->filter([
             'Slug' => $slug,
