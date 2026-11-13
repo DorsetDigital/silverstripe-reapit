@@ -7,11 +7,12 @@ namespace DorsetDigital\Reapit\Service;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use RuntimeException;
+use SilverStripe\Core\Environment;
 
 /**
  * Authenticated, read-only Reapit Foundations client.
  *
- * Configuration is read from the process environment rather than stored in the CMS.
+ * Configuration is read via Silverstripe's Environment API, supporting .env files and process environment variables.
  */
 class ApiClient
 {
@@ -115,7 +116,7 @@ class ApiClient
 
     private function setting(string $name): string
     {
-        $value = getenv($name);
+        $value = Environment::getEnv($name);
         if (!is_string($value) || trim($value) === '') {
             throw new RuntimeException("Missing required environment variable: {$name}");
         }
