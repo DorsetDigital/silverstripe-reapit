@@ -2,7 +2,7 @@
 
 A one-way, read-only property import from Reapit Foundations for Silverstripe CMS 5. The code is structured to simplify a future CMS 6 upgrade.
 
-> **Development status:** initial backend foundation. Single-property and bounded embedded-image imports are available for testing. Production-grade incremental image syncing and automated schedules are not yet implemented. Frontend templates exist but are not yet integration-tested. Do not deploy as a completed website integration.
+> **Development status:** initial backend foundation. Single-property and bounded embedded-image imports are available for testing. Incremental image synchronisation is implemented but not yet integration-tested; automated schedules are not installed. Frontend templates exist but are not yet integration-tested. Do not deploy as a completed website integration.
 
 ## Requirements
 
@@ -120,6 +120,44 @@ multi-page response rather than deleting images based on incomplete data.
 The task is intentionally scoped to **one property**. Global scheduled image
 synchronisation is not enabled yet; the import needs integration testing first.
 
+## Incremental image synchronisation
+
+Reapit's `/propertyImages` changed-image feed is queried in batches of up
+to **100 locally imported property IDs**, paginated at **100 image records**.
+Only new or changed images are downloaded. The image feed has its own
+`SyncState` checkpoint; a failure never advances it.
+
+To test **one known property** in DDEV without advancing the checkpoint:
+
+```bash
+ddev sake dev/tasks/reapit-sync-images "propertyId=MKT265922"
+```
+
+To test the first 20 imported properties, also without advancing the checkpoint:
+
+```bash
+ddev sake dev/tasks/reapit-sync-images "limit=20"
+```
+
+The default invocation inspects only ten properties. **Only** `all=1` scans
+every available local property and advances the checkpoint:
+
+```bash
+ddev sake dev/tasks/reapit-sync-images "all=1"
+```
+
+After end-to-end testing, schedule `DorsetDigital\\Reapit\\Job\\PropertyImageSyncJob`
+through QueuedJobs, ideally after the property sync job. Neither job is
+automatically scheduled. An initial full run with no image checkpoint can
+request all historical image records; do not enable it without first testing
+on a suitable dataset.
+
+**Deletions are not inferred from the incremental feed.** It returns changed
+image records, not a complete current collection. Deleted images need a
+separate, complete per-property reconciliation; this job never deletes local
+assets. An image changed while the job runs will be picked up by the next
+run's overlapping modification window.
+
 ## Frontend page
 
 Create a **Property listings** page in the Silverstripe SiteTree. The module supplies a
@@ -138,7 +176,7 @@ is required for basic sorting.
 
 **Important:** Image markup uses locally imported `PropertyImage.Image` assets.
 Images are currently imported by the single-property task or by explicitly
-passing `images=1` in a bounded manual import; scheduled image syncing is pending.
+passing `images=1` in a bounded manual import; the incremental image job is available but must be explicitly scheduled after testing.
 Listings without images still render.
 
 ## Optional Google Sitemaps integration

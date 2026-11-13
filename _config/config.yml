@@ -13,3 +13,7 @@ SilverStripe\Core\Injector\Injector:
   DorsetDigital\Reapit\Service\PropertyImageSynchroniser:
     constructor:
       httpClient: '%$GuzzleHttp\Client'
+  DorsetDigital\Reapit\Service\PropertyImageFeedSynchroniser:
+    constructor:
+      api: '%$DorsetDigital\Reapit\Service\ApiClient'
+      images: '%$DorsetDigital\Reapit\Service\PropertyImageSynchroniser'
