@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DorsetDigital\Reapit\Page;
+namespace DorsetDigital\Reapit\Control;
 
 use DorsetDigital\Reapit\Model\Property;
 use SilverStripe\CMS\Controllers\ContentController;
@@ -18,7 +18,8 @@ class PropertyListingPageController extends ContentController
     private static array $allowed_actions = ['view'];
 
     private static array $url_handlers = [
-        '$Slug' => 'view',
+        '/' => 'index',
+        '$Slug!' => 'view',
     ];
 
     private const SORTS = [
