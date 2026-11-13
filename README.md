@@ -52,6 +52,16 @@ and are **not suitable for scoped sandbox testing**. Do not enable them until
 you are ready to synchronise the entire configured dataset. Removing the limit
 restores normal import behaviour.
 
+To import a specific property without paging the collection, use:
+
+```bash
+ddev sake dev/tasks/reapit-import "propertyId=MKT265922&images=1"
+```
+
+This fetches the single property through `/properties/{id}`; it never
+updates the sync checkpoint. If `limit` is also supplied, it is explicitly
+ignored in `propertyId` mode and the task reports this.
+
 To import images alongside a bounded development import:
 
 ```bash

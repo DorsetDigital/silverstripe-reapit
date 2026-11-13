@@ -22,15 +22,19 @@ class PropertySynchroniser
     ) {
     }
 
-    public function import(bool $full = false, ?int $maxProperties = null, bool $withImages = false): int
+    public function import(bool $full = false, ?int $maxProperties = null, bool $withImages = false, ?string $propertyId = null): int
     {
         if ($maxProperties !== null && $maxProperties < 1) {
             throw new \InvalidArgumentException('Property import limit must be a positive integer.');
         }
 
+        if ($propertyId !== null && !preg_match('/^[A-Za-z0-9_-]{1,100}$/', $propertyId)) {
+            throw new \InvalidArgumentException('Invalid Reapit property ID.');
+        }
+
         // Image import is deliberately opt-in and bounded until the full
         // incremental image feed has been tested in a real Silverstripe site.
-        if ($withImages && ($maxProperties === null || $maxProperties > 100)) {
+        if ($withImages && $propertyId === null && ($maxProperties === null || $maxProperties > 100)) {
             throw new \InvalidArgumentException('Image-enabled imports require limit=1..100 during development.');
         }
 
@@ -53,8 +57,14 @@ class PropertySynchroniser
             $query['modifiedFrom'] = gmdate('Y-m-d\TH:i:s\Z', strtotime($state->LastSuccessful) - 120);
         }
 
+        // A targeted import must fetch exactly one property, not a page of the
+        // collection. The limit argument is irrelevant in this mode.
+        $pages = $propertyId !== null
+            ? [[$this->api->get('/properties/' . rawurlencode($propertyId), $withImages ? ['embed' => 'images'] : [])]]
+            : $this->api->pages('/properties', $query, $maxProperties);
+
         $count = 0;
-        foreach ($this->api->pages('/properties', $query, $maxProperties) as $page) {
+        foreach ($pages as $page) {
             foreach ($page as $remote) {
                 if (!is_array($remote) || empty($remote['id'])) {
                     continue;
@@ -92,7 +102,7 @@ class PropertySynchroniser
         }
         // A limited run may not have seen every record. It must not advance
         // the incremental checkpoint or interfere with subsequent full syncs.
-        if ($maxProperties === null) {
+        if ($maxProperties === null && $propertyId === null) {
             $state->LastSuccessful = $started;
             $state->write();
         }
