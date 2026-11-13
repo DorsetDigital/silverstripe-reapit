@@ -79,6 +79,20 @@ class PropertyListingPageController extends \PageController
         return $property ? $property->getMetaTitle() : $page->SEOTitle;
     }
 
+    /**
+     * The outer Page.ss template resolves AbsoluteLink() on the controller
+     * before the SiteTree record. Use the detail URL only for property requests.
+     */
+    public function AbsoluteLink(string $action = ''): ?string
+    {
+        $page = $this->data();
+        if ($action === '' && $page->getPropertyContext() !== null) {
+            return $page->AbsoluteLink();
+        }
+
+        return parent::AbsoluteLink($action);
+    }
+
     public function view(HTTPRequest $request)
     {
         $slug = $request->param('Slug');
