@@ -22,10 +22,10 @@ class PropertyListingPageController extends ContentController
     ];
 
     private const SORTS = [
-        'newest' => ['"MarketingDate" DESC', '"ID" DESC'],
-        'oldest' => ['"MarketingDate" ASC', '"ID" ASC'],
-        'price-low' => ['"Rent" ASC', '"ID" DESC'],
-        'price-high' => ['"Rent" DESC', '"ID" DESC'],
+        'newest' => ['MarketingDate' => 'DESC', 'ID' => 'DESC'],
+        'oldest' => ['MarketingDate' => 'ASC', 'ID' => 'ASC'],
+        'price-low' => ['Rent' => 'ASC', 'ID' => 'DESC'],
+        'price-high' => ['Rent' => 'DESC', 'ID' => 'DESC'],
     ];
 
     protected function init()
