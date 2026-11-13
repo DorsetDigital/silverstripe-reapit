@@ -7,8 +7,6 @@ namespace DorsetDigital\Reapit\Service;
 use DorsetDigital\Reapit\Model\Property;
 use DorsetDigital\Reapit\Model\SyncState;
 use SilverStripe\Core\Injector\Injectable;
-use SilverStripe\ORM\DB;
-use DorsetDigital\Reapit\Service\PropertySlugger;
 
 /**
  * Idempotent, resumable import; the checkpoint advances only after all pages succeed.
