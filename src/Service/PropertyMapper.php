@@ -30,10 +30,16 @@ class PropertyMapper
             $address['line4'] ?? null,
         ], static fn ($part): bool => is_scalar($part) && trim((string) $part) !== '');
 
-        $property->Title = (string) ($remote['marketing']['headline'] ?? $remote['description'] ?? $remote['id']);
         $property->Address = implode(', ', $street);
+        $strapline = self::nonEmptyText($remote['strapline'] ?? null);
+        $property->Title = $strapline
+            ?? ($property->Address !== '' ? 'Property at ' . $property->Address : 'Property ' . (string) ($remote['id'] ?? ''));
+        $property->Summary = self::nonEmptyText($remote['summary'] ?? null) ?? '';
+        $property->Description = self::nonEmptyText($remote['description'] ?? null) ?? '';
+        $property->LongDescription = self::nonEmptyText($remote['longDescription'] ?? null) ?? '';
+        $property->PropertyTypes = self::stringList($remote['type'] ?? []);
+        $property->PropertyStyles = self::stringList($remote['style'] ?? []);
         $property->Postcode = (string) ($address['postcode'] ?? '');
-        $property->Description = (string) ($remote['marketing']['description'] ?? '');
         $property->Bedrooms = (int) ($remote['bedrooms'] ?? 0);
         $property->Bathrooms = (int) ($remote['bathrooms'] ?? 0);
         $property->Rent = is_numeric($letting['rent'] ?? null) ? (float) $letting['rent'] : 0;
@@ -45,6 +51,25 @@ class PropertyMapper
         $property->RawData = json_encode($remote, JSON_THROW_ON_ERROR);
 
         $this->extend('updateMappedProperty', $property, $remote);
+    }
+
+    private static function nonEmptyText(mixed $value): ?string
+    {
+        return is_string($value) && trim($value) !== '' ? trim($value) : null;
+    }
+
+    /**
+     * Preserve Reapit's multi-valued type/style attributes as JSON arrays.
+     * Their labels can be mapped separately once confirmed for a customer.
+     */
+    private static function stringList(mixed $values): string
+    {
+        $items = is_array($values) ? array_values(array_filter(
+            $values,
+            static fn (mixed $value): bool => is_string($value) && trim($value) !== ''
+        )) : [];
+
+        return json_encode($items, JSON_THROW_ON_ERROR);
     }
 
     private static function date(mixed $date): ?string
