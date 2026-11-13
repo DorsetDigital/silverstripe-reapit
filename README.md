@@ -2,7 +2,7 @@
 
 A one-way, read-only property import from Reapit Foundations for Silverstripe CMS 5. The code is structured to simplify a future CMS 6 upgrade.
 
-> **Development status:** initial backend foundation. Property images, production-grade incremental image syncing and automated schedules are not yet implemented. Frontend templates exist but are not yet integration-tested. Do not deploy as a completed website integration.
+> **Development status:** initial backend foundation. Single-property and bounded embedded-image imports are available for testing. Production-grade incremental image syncing and automated schedules are not yet implemented. Frontend templates exist but are not yet integration-tested. Do not deploy as a completed website integration.
 
 ## Requirements
 
@@ -52,6 +52,18 @@ and are **not suitable for scoped sandbox testing**. Do not enable them until
 you are ready to synchronise the entire configured dataset. Removing the limit
 restores normal import behaviour.
 
+To import images alongside a bounded development import:
+
+```bash
+ddev sake dev/tasks/reapit-import "limit=20&images=1"
+```
+
+This requests `embed=images` for the limited properties and imports the embedded
+collection into local assets. Image-enabled imports are intentionally capped at
+100 properties, require an explicit limit and do **not** alter checkpoints.
+A missing image collection is never treated as evidence that existing images
+should be deleted. Do not run this on a full production data set yet.
+
 This limit restricts API retrieval, not the number of records already stored
 locally. A test database with 4,943 imported properties will retain those
 records unless they are separately cleared.
@@ -88,7 +100,7 @@ After confirming its API image payload and importing the corresponding
 property locally, download its images into Silverstripe's asset store:
 
 ```bash
-vendor/bin/sake dev/tasks/reapit-import-images "propertyId=MKT265922"
+ddev sake dev/tasks/reapit-import-images "propertyId=MKT265922"
 ```
 
 This reads the complete `/propertyImages` collection (up to 100 records),
@@ -114,9 +126,10 @@ them in the host project theme to use the site's existing CSS and component patt
 The module exposes its default stylesheet from `client/css/`. No JavaScript
 is required for basic sorting.
 
-**Important:** Image markup assumes imported `PropertyImage.Image` assets.
-The local image synchronisation is not yet implemented; listings without images
-will still render.
+**Important:** Image markup uses locally imported `PropertyImage.Image` assets.
+Images are currently imported by the single-property task or by explicitly
+passing `images=1` in a bounded manual import; scheduled image syncing is pending.
+Listings without images still render.
 
 ## Optional Google Sitemaps integration
 

@@ -17,14 +17,21 @@ class PropertySynchroniser
 
     public function __construct(
         private readonly ApiClient $api,
-        private readonly PropertyMapper $mapper
+        private readonly PropertyMapper $mapper,
+        private readonly PropertyImageSynchroniser $imageSynchroniser
     ) {
     }
 
-    public function import(bool $full = false, ?int $maxProperties = null): int
+    public function import(bool $full = false, ?int $maxProperties = null, bool $withImages = false): int
     {
         if ($maxProperties !== null && $maxProperties < 1) {
             throw new \InvalidArgumentException('Property import limit must be a positive integer.');
+        }
+
+        // Image import is deliberately opt-in and bounded until the full
+        // incremental image feed has been tested in a real Silverstripe site.
+        if ($withImages && ($maxProperties === null || $maxProperties > 100)) {
+            throw new \InvalidArgumentException('Image-enabled imports require limit=1..100 during development.');
         }
 
         $customer = $this->api->customerId();
@@ -39,6 +46,9 @@ class PropertySynchroniser
             'lettingStatus' => ['toLet', 'tenancyCurrent'],
             'internetAdvertising' => 'true',
         ];
+        if ($withImages) {
+            $query['embed'] = 'images';
+        }
         if (!$full && $state->LastSuccessful) {
             $query['modifiedFrom'] = gmdate('Y-m-d\TH:i:s\Z', strtotime($state->LastSuccessful) - 120);
         }
@@ -59,6 +69,24 @@ class PropertySynchroniser
                 $this->mapper->mapProperty($property, $remote);
                 PropertySlugger::ensureSlug($property);
                 $property->write();
+
+                if ($withImages) {
+                    $embedded = $remote['_embedded'] ?? null;
+                    // A missing image collection is not proof that there are
+                    // zero images. Never prune locally stored images on that basis.
+                    if (is_array($embedded) && array_key_exists('images', $embedded)) {
+                        $images = $embedded['images'];
+                        if (!is_array($images) || !array_is_list($images)) {
+                            throw new \RuntimeException('Malformed embedded Reapit image collection.');
+                        }
+                        $this->imageSynchroniser->sync($property, $images);
+                    } elseif (!empty($remote['featuredImageUrl'])) {
+                        throw new \RuntimeException(
+                            'Reapit omitted embedded images for property ' . $property->ReapitID
+                        );
+                    }
+                }
+
                 $count++;
             }
         }

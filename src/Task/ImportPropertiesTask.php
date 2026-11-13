@@ -25,7 +25,13 @@ class ImportPropertiesTask extends BuildTask
             $limit = (int) $value;
         }
 
-        $count = Injector::inst()->get(PropertySynchroniser::class)->import(true, $limit);
-        echo "Imported {$count} Reapit properties" . ($limit === null ? "" : " (test limit: {$limit}; checkpoint unchanged)") . "\n";
+        $imagesArg = $request->getVar('images');
+        if ($imagesArg !== null && !in_array($imagesArg, ['0', '1', 0, 1], true)) {
+            throw new \InvalidArgumentException('images must be 0 or 1.');
+        }
+        $withImages = $imagesArg === '1' || $imagesArg === 1;
+
+        $count = Injector::inst()->get(PropertySynchroniser::class)->import(true, $limit, $withImages);
+        echo "Imported {$count} Reapit properties" . ($limit === null ? "" : " (test limit: {$limit}; checkpoint unchanged)") . ($withImages ? " (embedded images synchronised)" : "") . "\n";
     }
 }
