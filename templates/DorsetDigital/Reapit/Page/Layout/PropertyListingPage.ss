@@ -1,10 +1,12 @@
-<div class="reapit-properties">
-    <header class="reapit-properties__header">
+<div class="reapit-properties container py-5">
+    <div class="row">
+        <div class="col-12">
+            <header class="reapit-properties__header mb-4">
         <h1>$Title.XML</h1>
         <% if $Content %><div class="reapit-properties__intro">$Content</div><% end_if %>
     </header>
 
-    <form class="reapit-properties__sort" method="get" action="$Link.ATT">
+            <form class="reapit-properties__sort mb-4" method="get" action="$Link.ATT">
         <label for="reapit-sort">Sort properties</label>
         <select id="reapit-sort" name="sort">
             <option value="newest"<% if $Sort == 'newest' %> selected<% end_if %>>Newest first</option>
@@ -16,9 +18,10 @@
     </form>
 
     <% if $Properties.Count %>
-        <div class="reapit-properties__grid">
+        <div class="row">
             <% loop $Properties %>
-                <article class="reapit-property-card">
+            <div class="col-md-6 col-lg-4 mb-4">
+                <article class="reapit-property-card h-100">
                     <a href="$Link.ATT" class="reapit-property-card__link" aria-label="View property: $Title.ATT">
                         <div class="reapit-property-card__image">
                             <% if $Images.First.Image %>
@@ -39,6 +42,7 @@
                         </div>
                     </a>
                 </article>
+            </div>
             <% end_loop %>
         </div>
         <% with $Properties %>
@@ -53,4 +57,6 @@
     <% else %>
         <p>There are currently no available properties.</p>
     <% end_if %>
+        </div>
+    </div>
 </div>
