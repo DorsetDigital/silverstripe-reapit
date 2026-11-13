@@ -21,7 +21,7 @@
                 <article class="reapit-property-card">
                     <% if $Images.First.Image %>
                         <a href="$Link.ATT" class="reapit-property-card__image">
-                            <img src="$Images.First.Image.FocusFill(640,420).URL.ATT" alt="$Title.ATT" loading="lazy">
+                            <img src="$Images.First.Image.Fill(640,420).URL.ATT" alt="$Title.ATT" loading="lazy">
                         </a>
                     <% end_if %>
                     <div class="reapit-property-card__body">
