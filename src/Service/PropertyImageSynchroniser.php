@@ -22,9 +22,10 @@ class PropertyImageSynchroniser
 
     /**
      * @param array<int, array<string, mixed>> $remoteImages Complete image collection for this property.
+     * @param bool $pruneMissing Only when the remote collection is known complete.
      * @return int Number of downloaded images
      */
-    public function sync(Property $property, array $remoteImages): int
+    public function sync(Property $property, array $remoteImages, bool $pruneMissing = true): int
     {
         if (!$property->isInDB()) {
             throw new RuntimeException('Save the property before synchronising its images.');
@@ -85,7 +86,7 @@ class PropertyImageSynchroniser
 
         // Only prune after the entire remote collection has been handled successfully.
         foreach ($existing as $id => $record) {
-            if (!isset($seen[$id])) {
+            if ($pruneMissing && !isset($seen[$id])) {
                 $image = $record->ImageID ? $record->Image() : null;
                 $record->delete();
                 if ($image && $image->exists()) {
