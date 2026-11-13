@@ -59,6 +59,19 @@ records unless they are separately cleared.
 
 Schedule `DorsetDigital\Reapit\Job\PropertySyncJob` (e.g. hourly) and `DorsetDigital\Reapit\Job\ReconcileJob` (e.g. daily) through QueuedJobs. This module does not silently add jobs on every request.
 
+## Inspecting image metadata (development only)
+
+Before enabling image downloads, inspect a small API page to verify the
+customer's actual property image structure:
+
+```bash
+vendor/bin/sake dev/tasks/reapit-inspect-images "limit=10"
+```
+
+The task requests `embed=images`, prints the first image record it finds,
+and makes no database or asset changes. The limit is capped at 20 properties.
+Embedding images can incur additional Reapit API usage charges.
+
 ## Frontend page
 
 Create a **Property listings** page in the Silverstripe SiteTree. The module supplies a
