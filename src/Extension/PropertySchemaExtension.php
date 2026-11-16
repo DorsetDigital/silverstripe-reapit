@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DorsetDigital\Reapit\Extension;
 
 use DorsetDigital\Reapit\Model\Property;
-use DorsetDigital\Reapit\Page\PropertyListingPageController;
+use DorsetDigital\Reapit\Control\PropertyListingPageController;
 use DorsetDigital\SchemaManager\Control\SchemaIDs;
 use DorsetDigital\SchemaManager\Model\Schema\ItemListSchema;
 use DorsetDigital\SchemaManager\Model\Schema\PropertyCollectionSchema;
