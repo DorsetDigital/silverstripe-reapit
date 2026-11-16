@@ -1,6 +1,6 @@
 ---
 Name: dorsetdigital-reapit-schema
 ---
-DorsetDigital\Reapit\Page\PropertyListingPage:
+DorsetDigital\Reapit\Control\PropertyListingPageController:
   extensions:
     - DorsetDigital\Reapit\Extension\PropertySchemaExtension

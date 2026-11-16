@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DorsetDigital\Reapit\Extension;
 
 use DorsetDigital\Reapit\Model\Property;
-use DorsetDigital\Reapit\Control\PropertyListingPageController;
+use DorsetDigital\Reapit\Page\PropertyListingPage;
 use DorsetDigital\SchemaManager\Control\SchemaIDs;
 use DorsetDigital\SchemaManager\Model\Schema\ItemListSchema;
 use DorsetDigital\SchemaManager\Model\Schema\PropertyCollectionSchema;
@@ -13,76 +13,68 @@ use DorsetDigital\SchemaManager\Model\Schema\PropertySchema;
 use DorsetDigital\SchemaManager\Model\Schema\RealEstateListingSchema;
 use DorsetDigital\SchemaManager\Model\Schema\RealEstateOfferSchema;
 use DorsetDigital\SchemaManager\Model\Schema\WebPageSchema;
-use SilverStripe\Control\Controller;
+use DorsetDigital\SchemaManager\Control\SchemaRegistry;
+use SilverStripe\ORM\PaginatedList;
 use SilverStripe\Core\Extension;
 
 /**
  * Optional bridge to DorsetDigital Schema Manager's real-estate builders.
  *
- * Schema Manager invokes updateSchemaManagerEntities on the SiteTree page while
- * preparing the graph. Replacing its WebPage entity preserves the existing
- * canonical ID for the index; detail routes receive their own canonical ID.
+ * Uses Reapit's controller extension hooks to add schema once the listing
+ * or individual property has been resolved. No changes to Schema Manager
+ * or parsing of incoming URLs are required.
  */
 class PropertySchemaExtension extends Extension
 {
-    public function updateSchemaManagerEntities(array &$entities): void
+    /**
+     * Controller hooks run after the listing or detail record has been resolved.
+     * The schema module remains entirely optional.
+     */
+    public function updatePropertyListing(PaginatedList $properties): void
     {
-        // Do not require Schema Manager merely to use the Reapit importer.
-        if (!class_exists(PropertyCollectionSchema::class)
-            || !class_exists(RealEstateListingSchema::class)) {
+        if (!class_exists(PropertyCollectionSchema::class)) {
             return;
         }
 
-        $controller = Controller::curr();
-        if (!$controller instanceof PropertyListingPageController) {
+        $page = $this->owner->data();
+        if (!$page instanceof PropertyListingPage) {
             return;
         }
 
-        $request = $controller->getRequest();
-        $slug = $request->param('Slug');
+        $itemList = ItemListSchema::create(
+            'reapit-properties-' . $page->ID,
+            (string) $page->Title
+        );
 
-        if (is_string($slug) && $slug !== '') {
-            $property = Property::get()->filter([
-                'Slug' => $slug,
-                'Available' => true,
-            ])->first();
-
-            if ($property) {
-                $this->detail($entities, $property);
-            }
-            return;
-        }
-
-        $this->index($entities, $controller);
-    }
-
-    private function index(array &$entities, PropertyListingPageController $controller): void
-    {
-        $key = 'reapit-properties-' . $this->owner->ID;
-
-        $itemList = ItemListSchema::create($key, (string) $this->owner->Title);
-        foreach ($controller->getProperties() as $property) {
+        foreach ($properties as $property) {
             $url = $property->AbsoluteLink();
-            if (is_string($url) && $url !== '') {
+            if ($url) {
                 $itemList->addItem($url, (string) $property->Title);
             }
         }
 
-        foreach ($entities as $index => $entity) {
-            if (!$entity instanceof WebPageSchema) {
-                continue;
-            }
+        $pageURL = $page->AbsoluteLink();
+        $webPage = WebPageSchema::create((string) $page->ID, (string) $page->Title)
+            ->setURL($pageURL);
+        $webPage->update(['@id' => SchemaIDs::webPage($page)]);
 
-            $entities[$index] = PropertyCollectionSchema::fromWebPage(
-                $entity,
-                $itemList->getEntityID()
-            );
-            $entities[] = $itemList;
-            break;
-        }
+        SchemaRegistry::add(PropertyCollectionSchema::fromWebPage(
+            $webPage,
+            $itemList->getEntityID()
+        ));
+        SchemaRegistry::add($itemList);
     }
 
-    private function detail(array &$entities, Property $record): void
+    public function updatePropertyDetail(Property $record): void
+    {
+        if (!class_exists(RealEstateListingSchema::class)) {
+            return;
+        }
+
+        $this->detail($record);
+    }
+
+    private function detail(Property $record): void
     {
         $url = $record->AbsoluteLink();
         if (!is_string($url) || $url === '') {
@@ -136,29 +128,21 @@ class PropertySchemaExtension extends Extension
             $offer->setRentalPrice((float) $record->Rent, 'GBP', $period);
         }
 
-        foreach ($entities as $index => $entity) {
-            if (!$entity instanceof WebPageSchema) {
-                continue;
-            }
+        $webPage = WebPageSchema::create('reapit-property-' . $identifier, (string) $record->Title)
+            ->setURL($url);
+        $listing = RealEstateListingSchema::fromWebPage($webPage)
+            ->setOffer($offer->getEntityID());
+        $listing->update(['@id' => SchemaIDs::forPageURL($url, 'webpage')]);
 
-            $listing = RealEstateListingSchema::fromWebPage($entity)
-                ->setURL($url)
-                ->setOffer($offer->getEntityID());
-            $listing->update([
-                '@id' => SchemaIDs::forPageURL($url, 'webpage'),
-                'name' => (string) $record->Title,
-            ]);
-            if ($record->MarketingDate) {
-                $listing->setDatePosted((string) $record->MarketingDate);
-            }
-            if ($record->RemoteModified) {
-                $listing->setDateModified((string) $record->RemoteModified);
-            }
-
-            $entities[$index] = $listing;
-            $entities[] = $property;
-            $entities[] = $offer;
-            break;
+        if ($record->MarketingDate) {
+            $listing->setDatePosted((string) $record->MarketingDate);
         }
+        if ($record->RemoteModified) {
+            $listing->setDateModified((string) $record->RemoteModified);
+        }
+
+        SchemaRegistry::add($listing);
+        SchemaRegistry::add($property);
+        SchemaRegistry::add($offer);
     }
 }

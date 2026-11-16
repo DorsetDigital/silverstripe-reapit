@@ -34,6 +34,14 @@ class PropertyListingPageController extends \PageController
         Requirements::css('dorsetdigital/silverstripe-reapit:client/css/property-listings.css');
     }
 
+    public function index(HTTPRequest $request)
+    {
+        $properties = $this->getProperties();
+        $this->extend('updatePropertyListing', $properties);
+
+        return $this->customise(['Properties' => $properties]);
+    }
+
     public function getProperties(): PaginatedList
     {
         $sort = $this->getSort();
@@ -109,6 +117,8 @@ class PropertyListingPageController extends \PageController
         // Update only the in-memory SiteTree record for this detail request.
         // MetaTags(false) and site-level metadata extensions then see property data.
         $this->data()->setPropertyContext($property);
+
+        $this->extend('updatePropertyDetail', $property);
 
         if ($property->Images()->exists()) {
             Requirements::javascript(
