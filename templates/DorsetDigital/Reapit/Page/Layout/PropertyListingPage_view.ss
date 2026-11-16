@@ -11,14 +11,22 @@
             </header>
 
             <% if $Images.Count %>
-                <div class="row mb-4">
+                <div class="row mb-4" data-reapit-gallery>
                     <% loop $Images %>
                         <% if $Image %>
                             <div class="col-md-6 col-lg-4 mb-4">
-                            <figure class="mb-0">
-                                <img class="img-fluid" src="$Image.ScaleMaxWidth(1200).URL.ATT" alt="$Up.Title.ATT" loading="lazy">
-                                <% if $Caption %><figcaption>$Caption.XML</figcaption><% end_if %>
-                            </figure>
+                                <figure class="mb-0">
+                                    <% with $Image %>
+                                        <% with $ScaleMaxWidth(1600) %>
+                                            <a href="$URL.ATT" data-pswp-width="$Width" data-pswp-height="$Height" aria-label="View larger property photograph">
+                                                <% with $Up.ScaleMaxWidth(550) %>
+                                                    <img class="img-fluid" src="$URL.ATT" width="$Width" height="$Height" alt="$Top.Property.Title.ATT" loading="lazy" decoding="async">
+                                                <% end_with %>
+                                            </a>
+                                        <% end_with %>
+                                    <% end_with %>
+                                    <% if $Caption %><figcaption>$Caption.XML</figcaption><% end_if %>
+                                </figure>
                             </div>
                         <% end_if %>
                     <% end_loop %>

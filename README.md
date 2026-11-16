@@ -269,3 +269,16 @@ These pages must be verified with that branch installed before release.
 ## License
 
 BSD-3-Clause
+
+## Property image lightbox
+
+Property detail pages use PhotoSwipe 5 to open imported images in a lightbox. The gallery keeps ordinary image links as a fallback when JavaScript is disabled. Frontend assets are bundled with the Composer package; **Node is not required on deployed sites**.
+
+To rebuild the committed frontend assets while developing this module:
+
+```bash
+npm ci
+npm run build
+```
+
+For incremental development, use `npm run dev`. The small Vite build lives in `vite.config.js` and uses `client/src/gallery.js` and `client/src/photoswipe.css`. It is adapted from the frontend integration in `dorsetdigital/silverstripe-photoswipe`, but has no dependency on that module.

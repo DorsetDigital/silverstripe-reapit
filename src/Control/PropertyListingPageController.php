@@ -110,6 +110,14 @@ class PropertyListingPageController extends \PageController
         // MetaTags(false) and site-level metadata extensions then see property data.
         $this->data()->setPropertyContext($property);
 
+        if ($property->Images()->exists()) {
+            Requirements::javascript(
+                'dorsetdigital/silverstripe-reapit:client/dist/gallery.js',
+                ['type' => 'module']
+            );
+            Requirements::css('dorsetdigital/silverstripe-reapit:client/dist/photoswipe.css');
+        }
+
         // Returning customised page data preserves the normal SiteTree layout.
         // Silverstripe selects PropertyListingPage_view.ss for this action.
         return $this->customise(['Property' => $property]);
