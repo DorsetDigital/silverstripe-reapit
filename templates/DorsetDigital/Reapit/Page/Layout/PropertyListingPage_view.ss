@@ -11,10 +11,10 @@
             </header>
 
             <% if $Images.Count %>
-                <div class="row mb-4" data-reapit-gallery>
+                <div class="reapit-property-detail__gallery mb-4" data-reapit-gallery>
                     <% loop $Images %>
                         <% if $Image %>
-                            <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="reapit-property-detail__gallery-item">
                                 <figure class="mb-0">
                                     <% with $Image %>
                                         <% with $ScaleMaxWidth(1600) %>
@@ -49,6 +49,14 @@
                 <div class="reapit-property-detail__description">$Description</div>
             <% end_if %>
         </article>
+    <% end_with %>
+
+    <% with $PropertyEnquiryLink %>
+        <% if $exists %>
+            <div class="reapit-property-detail__enquiry mt-4 mb-5">
+                <a class="btn btn-primary reapit-property-detail__enquiry-link" href="$URL.ATT"<% if $OpenInNew %> target="_blank" rel="noopener noreferrer"<% end_if %>>$LinkText.XML</a>
+            </div>
+        <% end_if %>
     <% end_with %>
         </div>
     </div>

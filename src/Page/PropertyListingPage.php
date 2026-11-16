@@ -7,6 +7,8 @@ namespace DorsetDigital\Reapit\Page;
 use DorsetDigital\Reapit\Control\PropertyListingPageController;
 use DorsetDigital\Reapit\Model\Property;
 use SilverStripe\Assets\Image;
+use SilverStripe\LinkField\Form\LinkField;
+use SilverStripe\LinkField\Models\Link;
 
 /**
  * One CMS page owns the property listing and its property detail URLs.
@@ -23,6 +25,34 @@ class PropertyListingPage extends \Page
     private static string $singular_name = 'Property listings';
 
     private static string $description = 'Displays imported Reapit properties and individual property details.';
+
+    private static array $has_one = [
+        'PropertyEnquiryLink' => Link::class,
+    ];
+
+    private static array $owns = [
+        'PropertyEnquiryLink',
+    ];
+
+    private static array $cascade_deletes = [
+        'PropertyEnquiryLink',
+    ];
+
+    private static array $cascade_duplicates = [
+        'PropertyEnquiryLink',
+    ];
+
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
+        $fields->removeByName('PropertyEnquiryLinkID');
+        $fields->addFieldToTab(
+            'Root.Main',
+            LinkField::create('PropertyEnquiryLink', 'Property enquiry CTA')
+        );
+
+        return $fields;
+    }
 
     private ?Property $propertyContext = null;
 

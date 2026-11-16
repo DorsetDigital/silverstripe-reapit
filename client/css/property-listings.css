@@ -14,9 +14,18 @@
 .reapit-property-card__body h2{font-size:1.2rem;margin:0 0 .5rem}
 .reapit-property-card__rent,.reapit-property-detail__rent{font-weight:700}
 .reapit-properties__pagination{display:flex;gap:1rem;align-items:center;justify-content:center;margin:2rem 0}
-.reapit-property-detail__gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:1rem}
-.reapit-property-detail__gallery figure{margin:0}
-.reapit-property-detail__gallery img{max-width:100%;height:auto;display:block}
+.reapit-property-detail__gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.reapit-property-detail__gallery-item{min-width:0}
+.reapit-property-detail__gallery-item:first-child{grid-column:1/-1}
+.reapit-property-detail__gallery figure{margin:0;height:100%}
+.reapit-property-detail__gallery figure>a{display:block;height:100%}
+.reapit-property-detail__gallery img{display:block;width:100%;height:100%;aspect-ratio:3/2;object-fit:cover}
+.reapit-property-detail__gallery a:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+.reapit-property-detail__gallery figcaption{font-size:.875rem}
+@media (min-width:768px){
+.reapit-property-detail__gallery{grid-template-columns:repeat(4,minmax(0,1fr))}
+.reapit-property-detail__gallery-item:first-child{grid-column:span 2;grid-row:span 2}
+}
 .reapit-property-detail__facts{display:flex;flex-wrap:wrap;gap:1.5rem;margin:1.5rem 0}
 .reapit-property-detail__facts div{display:flex;gap:.4rem}
 .reapit-property-detail__facts dt{font-weight:700}
