@@ -25,7 +25,7 @@
                                     <figure>
                                         <% with $Image %>
                                             <% with $ScaleMaxWidth(1600) %>
-                                                <a href="$URL.ATT" data-pswp-width="$Width" data-pswp-height="$Height" aria-label="View property photograph $Up.Up.Pos">
+                                                <a href="$URL.ATT" data-pswp-width="$Width" data-pswp-height="$Height" aria-label="View larger property photograph">
                                                     <% with $Up.ScaleMaxWidth(750) %>
                                                         <img src="$URL.ATT" width="$Width" height="$Height" alt="$Top.Property.Title.ATT" loading="lazy" decoding="async">
                                                     <% end_with %>
