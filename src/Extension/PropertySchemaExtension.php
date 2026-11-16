@@ -58,11 +58,7 @@ class PropertySchemaExtension extends Extension
 
     private function index(array &$entities, PropertyListingPageController $controller): void
     {
-        $request = $controller->getRequest();
-        $query = $request->getVars();
-        ksort($query);
-        $key = 'reapit-properties-' . $this->owner->ID . '-'
-            . substr(sha1($request->getURL() . '?' . http_build_query($query)), 0, 12);
+        $key = 'reapit-properties-' . $this->owner->ID;
 
         $itemList = ItemListSchema::create($key, (string) $this->owner->Title);
         foreach ($controller->getProperties() as $property) {
