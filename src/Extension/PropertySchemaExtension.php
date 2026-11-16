@@ -131,7 +131,11 @@ class PropertySchemaExtension extends Extension
         $webPage = WebPageSchema::create('reapit-property-' . $identifier, (string) $record->Title)
             ->setURL($url);
         $listing = RealEstateListingSchema::fromWebPage($webPage)
-            ->setOffer($offer->getEntityID());
+            ->setOffer($offer->getEntityID())
+            ->setIsPartOf(SchemaIDs::forPageURL(
+                $this->owner->data()->AbsoluteLink(''),
+                'webpage'
+            ));
         $listing->update(['@id' => SchemaIDs::forPageURL($url, 'webpage')]);
 
         if ($record->MarketingDate) {
