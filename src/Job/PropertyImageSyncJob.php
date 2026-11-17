@@ -6,14 +6,13 @@ namespace DorsetDigital\Reapit\Job;
 
 use DorsetDigital\Reapit\Service\PropertyImageFeedSynchroniser;
 use SilverStripe\Core\Injector\Injector;
-use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJob;
 
 /**
  * Run after properties are synchronised so newly advertised properties
  * exist locally before their image records are requested.
  */
-class PropertyImageSyncJob extends AbstractQueuedJob
+class PropertyImageSyncJob extends RecurringReapitJob
 {
     public function getTitle(): string
     {

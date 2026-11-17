@@ -2,7 +2,7 @@
 
 A one-way, read-only property import from Reapit Foundations for Silverstripe CMS 5. The code is structured to simplify a future CMS 6 upgrade.
 
-> **Development status:** initial backend foundation. Single-property and bounded embedded-image imports are available for testing. Incremental image synchronisation is implemented but not yet integration-tested; automated schedules are not installed. Frontend templates exist but are not yet integration-tested. Do not deploy as a completed website integration.
+> **Development status:** initial backend foundation. Single-property and bounded embedded-image imports are available for testing. Incremental image synchronisation is implemented but not yet integration-tested; recurring jobs are managed by a required caretaker job. Frontend templates exist but are not yet integration-tested. Do not deploy as a completed website integration.
 
 ## Requirements
 
@@ -80,6 +80,18 @@ records unless they are separately cleared.
 
 
 Schedule `DorsetDigital\Reapit\Job\PropertySyncJob` (e.g. hourly) and `DorsetDigital\Reapit\Job\ReconcileJob` (e.g. daily) through QueuedJobs. This module does not silently add jobs on every request.
+
+## Recurring jobs and monitoring
+
+QueuedJobs' default-job configuration ensures `ReapitCaretakerJob` is present. Run the standard QueuedJobs queue processor regularly (for example, each minute); the caretaker runs every 300 seconds by default.
+
+The caretaker ensures each **enabled** sync job has a queued or active instance. Successful jobs schedule their successor in `afterComplete()` using the configurable `interval`. Missing jobs are requeued by the caretaker. Jobs already running or deliberately paused are not duplicated.
+
+Configure `enabled`, `interval` and `alert_after` (seconds) in project YAML on the four job classes. Property sync defaults to hourly; property reconciliation daily; image feed hourly. Full image reconciliation is **disabled by default** until live data and API costs have been reviewed.
+
+Set `REAPIT_SLACK_WEBHOOK` to enable Slack notifications when a job has not completed successfully within its `alert_after` threshold, followed by a recovery notification after success. Alerts are deduplicated in `ReapitJobHealth`; job health is deliberately separate from API `SyncState` checkpoints. Without a webhook, jobs still run but alerts are not sent.
+
+A caretaker cannot detect a completely stopped queue worker: use external monitoring for the queue runner itself. On first installation, allow one full alert interval before considering jobs overdue. Scheduling a job does not make an unsafe full image reconciliation safe; enable that job only after validating its behaviour with the customer's real feed.
 
 ## Inspecting image metadata (development only)
 

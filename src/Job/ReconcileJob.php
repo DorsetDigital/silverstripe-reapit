@@ -6,10 +6,9 @@ namespace DorsetDigital\Reapit\Job;
 
 use DorsetDigital\Reapit\Service\PropertySynchroniser;
 use SilverStripe\Core\Injector\Injector;
-use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJob;
 
-class ReconcileJob extends AbstractQueuedJob
+class ReconcileJob extends RecurringReapitJob
 {
     public function getTitle(): string
     {

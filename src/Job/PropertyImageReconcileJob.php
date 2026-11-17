@@ -6,14 +6,13 @@ namespace DorsetDigital\Reapit\Job;
 
 use DorsetDigital\Reapit\Service\PropertyImageReconciler;
 use SilverStripe\Core\Injector\Injector;
-use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJob;
 
 /**
  * Complete reconciliation can generate many API requests; do not schedule
  * until the dry-run has been verified against the live customer.
  */
-class PropertyImageReconcileJob extends AbstractQueuedJob
+class PropertyImageReconcileJob extends RecurringReapitJob
 {
     public function getTitle(): string
     {

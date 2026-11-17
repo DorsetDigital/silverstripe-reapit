@@ -21,3 +21,45 @@ SilverStripe\Core\Injector\Injector:
     constructor:
       api: '%$DorsetDigital\Reapit\Service\ApiClient'
       images: '%$DorsetDigital\Reapit\Service\PropertyImageSynchroniser'
+
+---
+Name: dorsetdigital-reapit-jobs
+After:
+  - queuedjobsettings
+---
+SilverStripe\Core\Injector\Injector:
+  Symbiote\QueuedJobs\Services\QueuedJobService:
+    properties:
+      defaultJobs:
+        ReapitCaretaker:
+          type: 'DorsetDigital\\Reapit\\Job\\ReapitCaretakerJob'
+          filter:
+            JobTitle: 'Reapit job caretaker'
+          recreate: true
+          construct: []
+          startDateFormat: 'Y-m-d H:i:s'
+          startTimeString: 'now'
+
+DorsetDigital\Reapit\Job\ReapitCaretakerJob:
+  interval: 300
+
+DorsetDigital\Reapit\Job\PropertySyncJob:
+  enabled: true
+  interval: 3600
+  alert_after: 10800
+
+DorsetDigital\Reapit\Job\ReconcileJob:
+  enabled: true
+  interval: 86400
+  alert_after: 172800
+
+DorsetDigital\Reapit\Job\PropertyImageSyncJob:
+  enabled: true
+  interval: 3600
+  alert_after: 10800
+
+# Complete per-property inventory checks can be expensive; opt in explicitly.
+DorsetDigital\Reapit\Job\PropertyImageReconcileJob:
+  enabled: false
+  interval: 604800
+  alert_after: 1209600
