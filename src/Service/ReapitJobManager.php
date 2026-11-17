@@ -140,7 +140,7 @@ class ReapitJobManager
             ]);
             return true;
         } catch (\Throwable $exception) {
-            error_log('Reapit Slack alert failed: ' . $exception->getMessage());
+            error_log('Reapit Slack alert failed (' . get_class($exception) . ').');
             return false;
         }
     }

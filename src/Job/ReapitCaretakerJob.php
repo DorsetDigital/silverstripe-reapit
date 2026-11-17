@@ -6,6 +6,7 @@ namespace DorsetDigital\Reapit\Job;
 
 use DorsetDigital\Reapit\Service\ReapitJobManager;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Core\Config\Config;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJobService;
@@ -44,7 +45,7 @@ class ReapitCaretakerJob extends AbstractQueuedJob
 
     public function afterComplete(): void
     {
-        $interval = max(60, (int) static::config()->get('interval'));
+        $interval = max(60, (int) Config::inst()->get(self::class, 'interval'));
         QueuedJobService::singleton()->queueJob(
             new self(),
             gmdate('Y-m-d H:i:s', time() + $interval),

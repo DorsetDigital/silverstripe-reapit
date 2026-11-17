@@ -32,7 +32,7 @@ SilverStripe\Core\Injector\Injector:
     properties:
       defaultJobs:
         ReapitCaretaker:
-          type: 'DorsetDigital\\Reapit\\Job\\ReapitCaretakerJob'
+          type: 'DorsetDigital\Reapit\Job\ReapitCaretakerJob'
           filter:
             JobTitle: 'Reapit job caretaker'
           recreate: true
