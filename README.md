@@ -92,7 +92,7 @@ Configure `enabled`, `interval` and `alert_after` (seconds) in project YAML on t
 For example, enable the property sync in project configuration:
 
 ```yaml
-DorsetDigital\\Reapit\\Job\\PropertySyncJob:
+DorsetDigital\Reapit\Job\PropertySyncJob:
   enabled: true
   interval: 3600
   alert_after: 10800
