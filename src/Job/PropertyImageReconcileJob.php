@@ -19,7 +19,7 @@ class PropertyImageReconcileJob extends RecurringReapitJob
         return 'Reconcile Reapit property image inventories';
     }
 
-    public function getJobType(): int
+    public function getJobType(): string
     {
         return QueuedJob::QUEUED;
     }

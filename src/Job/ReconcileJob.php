@@ -15,7 +15,7 @@ class ReconcileJob extends RecurringReapitJob
         return 'Reconcile withdrawn Reapit properties';
     }
 
-    public function getJobType(): int
+    public function getJobType(): string
     {
         return QueuedJob::QUEUED;
     }

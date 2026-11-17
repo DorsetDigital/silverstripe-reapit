@@ -15,7 +15,7 @@ class PropertySyncJob extends RecurringReapitJob
         return 'Synchronise Reapit properties';
     }
 
-    public function getJobType(): int
+    public function getJobType(): string
     {
         return QueuedJob::QUEUED;
     }
