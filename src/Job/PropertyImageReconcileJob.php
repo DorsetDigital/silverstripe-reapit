@@ -31,8 +31,20 @@ class PropertyImageReconcileJob extends RecurringReapitJob
 
     public function process(): void
     {
-        Injector::inst()->get(PropertyImageReconciler::class)->reconcile(apply: true);
-        $this->currentStep = 1;
-        $this->isComplete = true;
+        $started = microtime(true);
+        try {
+            $result = Injector::inst()->get(PropertyImageReconciler::class)->reconcile(apply: true);
+            $this->addMessage('Properties checked: ' . $result['properties']);
+            $this->addMessage('Remote images: ' . $result['remote']);
+            $this->addMessage('Existing local images: ' . $result['existing']);
+            $this->addMessage('Images downloaded: ' . $result['downloaded']);
+            $this->addMessage('Obsolete images removed: ' . $result['missing']);
+            $this->addMessage(sprintf('Completed in %.1f seconds.', microtime(true) - $started));
+            $this->currentStep = 1;
+            $this->isComplete = true;
+        } catch (\Throwable $exception) {
+            $this->addMessage('Failed (' . get_class($exception) . ').', 'ERROR');
+            throw $exception;
+        }
     }
 }

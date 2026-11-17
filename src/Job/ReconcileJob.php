@@ -27,8 +27,18 @@ class ReconcileJob extends RecurringReapitJob
 
     public function process(): void
     {
-        Injector::inst()->get(PropertySynchroniser::class)->reconcile();
-        $this->currentStep = 1;
-        $this->isComplete = true;
+        $started = microtime(true);
+        try {
+            $synchroniser = Injector::inst()->get(PropertySynchroniser::class);
+            $withdrawn = $synchroniser->reconcile();
+            $this->addMessage('Marketable properties returned: ' . $synchroniser->getLastReconciliationCount());
+            $this->addMessage('Properties marked unavailable: ' . $withdrawn);
+            $this->addMessage(sprintf('Completed in %.1f seconds.', microtime(true) - $started));
+            $this->currentStep = 1;
+            $this->isComplete = true;
+        } catch (\Throwable $exception) {
+            $this->addMessage('Failed (' . get_class($exception) . ').', 'ERROR');
+            throw $exception;
+        }
     }
 }

@@ -15,6 +15,19 @@ class PropertySynchroniser
 {
     use Injectable;
 
+    private array $lastImportDetails = [];
+    private int $lastReconciliationCount = 0;
+
+    public function getLastImportDetails(): array
+    {
+        return $this->lastImportDetails;
+    }
+
+    public function getLastReconciliationCount(): int
+    {
+        return $this->lastReconciliationCount;
+    }
+
     public function __construct(
         private readonly ApiClient $api,
         private readonly PropertyMapper $mapper,
@@ -56,6 +69,11 @@ class PropertySynchroniser
         if (!$full && $state->LastSuccessful) {
             $query['modifiedFrom'] = gmdate('Y-m-d\TH:i:s\Z', strtotime($state->LastSuccessful) - 120);
         }
+
+        $this->lastImportDetails = [
+            'mode' => $propertyId !== null ? 'single property' : ($maxProperties !== null ? 'limited' : (isset($query['modifiedFrom']) ? 'incremental' : 'full')),
+            'modifiedFrom' => $query['modifiedFrom'] ?? null,
+        ];
 
         // A targeted import must fetch exactly one property, not a page of the
         // collection. The limit argument is irrelevant in this mode.
@@ -128,6 +146,7 @@ class PropertySynchroniser
                 }
             }
         }
+        $this->lastReconciliationCount = count($seen);
         $removed = 0;
         foreach (Property::get()->filter('CustomerID', $customer) as $property) {
             if (!isset($seen[$property->ReapitID])) {

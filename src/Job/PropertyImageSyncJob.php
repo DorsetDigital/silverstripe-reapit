@@ -31,8 +31,18 @@ class PropertyImageSyncJob extends RecurringReapitJob
 
     public function process(): void
     {
-        Injector::inst()->get(PropertyImageFeedSynchroniser::class)->sync();
-        $this->currentStep = 1;
-        $this->isComplete = true;
+        $started = microtime(true);
+        try {
+            $result = Injector::inst()->get(PropertyImageFeedSynchroniser::class)->sync();
+            $this->addMessage('Properties checked: ' . $result['properties']);
+            $this->addMessage('Changed image records: ' . $result['changed']);
+            $this->addMessage('Images downloaded: ' . $result['downloaded']);
+            $this->addMessage(sprintf('Completed in %.1f seconds.', microtime(true) - $started));
+            $this->currentStep = 1;
+            $this->isComplete = true;
+        } catch (\Throwable $exception) {
+            $this->addMessage('Failed (' . get_class($exception) . ').', 'ERROR');
+            throw $exception;
+        }
     }
 }

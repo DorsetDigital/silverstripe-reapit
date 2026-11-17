@@ -27,8 +27,22 @@ class PropertySyncJob extends RecurringReapitJob
 
     public function process(): void
     {
-        Injector::inst()->get(PropertySynchroniser::class)->import();
-        $this->currentStep = 1;
-        $this->isComplete = true;
+        $started = microtime(true);
+        try {
+            $synchroniser = Injector::inst()->get(PropertySynchroniser::class);
+            $count = $synchroniser->import();
+            $details = $synchroniser->getLastImportDetails();
+            $this->addMessage('Sync mode: ' . ($details['mode'] ?? 'unknown'));
+            if (!empty($details['modifiedFrom'])) {
+                $this->addMessage('Modified from: ' . $details['modifiedFrom'] . ' UTC');
+            }
+            $this->addMessage('Properties imported/updated: ' . $count);
+            $this->addMessage(sprintf('Completed in %.1f seconds.', microtime(true) - $started));
+            $this->currentStep = 1;
+            $this->isComplete = true;
+        } catch (\Throwable $exception) {
+            $this->addMessage('Failed (' . get_class($exception) . ').', 'ERROR');
+            throw $exception;
+        }
     }
 }
