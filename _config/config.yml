@@ -44,17 +44,17 @@ DorsetDigital\Reapit\Job\ReapitCaretakerJob:
   interval: 300
 
 DorsetDigital\Reapit\Job\PropertySyncJob:
-  enabled: true
+  enabled: false
   interval: 3600
   alert_after: 10800
 
 DorsetDigital\Reapit\Job\ReconcileJob:
-  enabled: true
+  enabled: false
   interval: 86400
   alert_after: 172800
 
 DorsetDigital\Reapit\Job\PropertyImageSyncJob:
-  enabled: true
+  enabled: false
   interval: 3600
   alert_after: 10800
 

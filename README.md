@@ -85,9 +85,18 @@ Schedule `DorsetDigital\Reapit\Job\PropertySyncJob` (e.g. hourly) and `DorsetDig
 
 QueuedJobs' default-job configuration ensures `ReapitCaretakerJob` is present. Run the standard QueuedJobs queue processor regularly (for example, each minute); the caretaker runs every 300 seconds by default.
 
-The caretaker ensures each **enabled** sync job has a queued or active instance. Successful jobs schedule their successor in `afterComplete()` using the configurable `interval`. Missing jobs are requeued by the caretaker. Jobs already running or deliberately paused are not duplicated.
+The caretaker ensures each **enabled** sync job has a queued or active instance. **All full-feed jobs are disabled by default**, so installing or updating this module cannot unexpectedly start an unbounded sync. Enable jobs explicitly in the host project's YAML after validating the intended feed and API usage. Successful jobs schedule their successor in `afterComplete()` using the configurable `interval`. Missing jobs are requeued by the caretaker. Jobs already running or deliberately paused are not duplicated.
 
-Configure `enabled`, `interval` and `alert_after` (seconds) in project YAML on the four job classes. Property sync defaults to hourly; property reconciliation daily; image feed hourly. Full image reconciliation is **disabled by default** until live data and API costs have been reviewed.
+Configure `enabled`, `interval` and `alert_after` (seconds) in project YAML on the four job classes. Property sync defaults to hourly; property reconciliation daily; image feed hourly. Full image reconciliation should remain disabled until live data and API costs have been reviewed.
+
+For example, enable the property sync in project configuration:
+
+```yaml
+DorsetDigital\\Reapit\\Job\\PropertySyncJob:
+  enabled: true
+  interval: 3600
+  alert_after: 10800
+```
 
 Set `REAPIT_SLACK_WEBHOOK` to enable Slack notifications when a job has not completed successfully within its `alert_after` threshold, followed by a recovery notification after success. Alerts are deduplicated in `ReapitJobHealth`; job health is deliberately separate from API `SyncState` checkpoints. Without a webhook, jobs still run but alerts are not sent.
 
