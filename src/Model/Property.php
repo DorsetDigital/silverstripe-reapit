@@ -70,6 +70,18 @@ class Property extends DataObject
         return $page ? $page->Link(rawurlencode((string) $this->Slug)) : null;
     }
 
+    /**
+     * Human-readable marketing status; retain the original Reapit code in LettingStatus.
+     */
+    public function getLettingStatusLabel(): string
+    {
+        return match ((string) $this->LettingStatus) {
+            'toLet' => 'Available to rent',
+            'tenancyCurrent' => 'Currently let',
+            default => (string) $this->LettingStatus,
+        };
+    }
+
     public function getMetaTitle(): string
     {
         return (string) $this->Title;

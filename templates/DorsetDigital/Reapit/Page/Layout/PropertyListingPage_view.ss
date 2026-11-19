@@ -58,7 +58,7 @@
                         <% if $Rent %><div><dt>Rent</dt><dd>&pound;$Rent.Nice <% if $RentFrequency %>/ $RentFrequency.XML<% end_if %></dd></div><% end_if %>
                         <% if $Bedrooms %><div><dt>Bedrooms</dt><dd>$Bedrooms</dd></div><% end_if %>
                         <% if $Bathrooms %><div><dt>Bathrooms</dt><dd>$Bathrooms</dd></div><% end_if %>
-                        <% if $LettingStatus %><div><dt>Status</dt><dd>$LettingStatus.XML</dd></div><% end_if %>
+                        <% if $LettingStatus %><div><dt>Status</dt><dd>$LettingStatusLabel.XML</dd></div><% end_if %>
                         <% if $Postcode %><div><dt>Postcode</dt><dd>$Postcode.XML</dd></div><% end_if %>
                         <div><dt>Reference</dt><dd>$ReapitID.XML</dd></div>
                     </dl>
@@ -73,7 +73,7 @@
                         <p class="reapit-property-detail__price">&pound;$Rent.Nice</p>
                         <% if $RentFrequency %><p class="reapit-property-detail__price-period">$RentFrequency.XML</p><% end_if %>
                     <% end_if %>
-                    <% if $LettingStatus %><p class="reapit-property-detail__status">$LettingStatus.XML</p><% end_if %>
+                    <% if $LettingStatus %><p class="reapit-property-detail__status">$LettingStatusLabel.XML</p><% end_if %>
 
                     <% if $Bedrooms || $Bathrooms %>
                         <dl class="reapit-property-detail__highlights">
