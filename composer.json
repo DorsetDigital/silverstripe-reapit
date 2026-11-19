@@ -1,0 +1,28 @@
+{
+  "name": "dorsetdigital/silverstripe-reapit",
+  "description": "Reapit Foundations property import for Silverstripe CMS",
+  "type": "silverstripe-vendormodule",
+  "license": "BSD-3-Clause",
+  "require": {
+    "php": "^8.3",
+    "silverstripe/framework": "^5.2",
+    "guzzlehttp/guzzle": "^7.8",
+    "symbiote/silverstripe-queuedjobs": "^5.3",
+    "silverstripe/linkfield": "^4"
+  },
+  "autoload": {
+    "psr-4": {
+      "DorsetDigital\\Reapit\\": "src/"
+    }
+  },
+  "extra": {
+    "expose": [
+      "client/css",
+      "client/images",
+      "client/dist"
+    ]
+  },
+  "suggest": {
+    "wilr/silverstripe-googlesitemaps": "^3 for optional property sitemap entries on Silverstripe CMS 5"
+  }
+}

@@ -1,0 +1,160 @@
+<?php
+
+declare(strict_types=1);
+
+namespace DorsetDigital\Reapit\Service;
+
+use DorsetDigital\Reapit\Model\Property;
+use DorsetDigital\Reapit\Model\SyncState;
+use SilverStripe\Core\Injector\Injectable;
+
+/**
+ * Idempotent, resumable import; the checkpoint advances only after all pages succeed.
+ */
+class PropertySynchroniser
+{
+    use Injectable;
+
+    private array $lastImportDetails = [];
+    private int $lastReconciliationCount = 0;
+
+    public function getLastImportDetails(): array
+    {
+        return $this->lastImportDetails;
+    }
+
+    public function getLastReconciliationCount(): int
+    {
+        return $this->lastReconciliationCount;
+    }
+
+    public function __construct(
+        private readonly ApiClient $api,
+        private readonly PropertyMapper $mapper,
+        private readonly PropertyImageSynchroniser $imageSynchroniser
+    ) {
+    }
+
+    public function import(bool $full = false, ?int $maxProperties = null, bool $withImages = false, ?string $propertyId = null): int
+    {
+        if ($maxProperties !== null && $maxProperties < 1) {
+            throw new \InvalidArgumentException('Property import limit must be a positive integer.');
+        }
+
+        if ($propertyId !== null && !preg_match('/^[A-Za-z0-9_-]{1,100}$/', $propertyId)) {
+            throw new \InvalidArgumentException('Invalid Reapit property ID.');
+        }
+
+        // Image import is deliberately opt-in and bounded until the full
+        // incremental image feed has been tested in a real Silverstripe site.
+        if ($withImages && $propertyId === null && ($maxProperties === null || $maxProperties > 100)) {
+            throw new \InvalidArgumentException('Image-enabled imports require limit=1..100 during development.');
+        }
+
+        $customer = $this->api->customerId();
+        $state = SyncState::get()->filter(['CustomerID' => $customer, 'Channel' => 'properties'])->first();
+        if (!$state) {
+            $state = SyncState::create();
+            $state->CustomerID = $customer;
+            $state->Channel = 'properties';
+        }
+        $started = gmdate('Y-m-d H:i:s');
+        $query = [
+            'lettingStatus' => ['toLet', 'tenancyCurrent'],
+            'internetAdvertising' => 'true',
+        ];
+        if ($withImages) {
+            $query['embed'] = 'images';
+        }
+        if (!$full && $state->LastSuccessful) {
+            $query['modifiedFrom'] = gmdate('Y-m-d\TH:i:s\Z', strtotime($state->LastSuccessful) - 120);
+        }
+
+        $this->lastImportDetails = [
+            'mode' => $propertyId !== null ? 'single property' : ($maxProperties !== null ? 'limited' : (isset($query['modifiedFrom']) ? 'incremental' : 'full')),
+            'modifiedFrom' => $query['modifiedFrom'] ?? null,
+        ];
+
+        // A targeted import must fetch exactly one property, not a page of the
+        // collection. The limit argument is irrelevant in this mode.
+        $pages = $propertyId !== null
+            ? [[$this->api->get('/properties/' . rawurlencode($propertyId), $withImages ? ['embed' => 'images'] : [])]]
+            : $this->api->pages('/properties', $query, $maxProperties);
+
+        $count = 0;
+        foreach ($pages as $page) {
+            foreach ($page as $remote) {
+                if (!is_array($remote) || empty($remote['id'])) {
+                    continue;
+                }
+                $property = Property::get()->filter([
+                    'CustomerID' => $customer,
+                    'ReapitID' => (string) $remote['id'],
+                ])->first() ?: Property::create();
+
+                $property->CustomerID = $customer;
+                $property->ReapitID = (string) $remote['id'];
+                $this->mapper->mapProperty($property, $remote);
+                PropertySlugger::ensureSlug($property);
+                $property->write();
+
+                if ($withImages) {
+                    $embedded = $remote['_embedded'] ?? null;
+                    // A missing image collection is not proof that there are
+                    // zero images. Never prune locally stored images on that basis.
+                    if (is_array($embedded) && isset($embedded['images'])) {
+                        $images = $embedded['images'];
+                        if (!is_array($images) || !array_is_list($images)) {
+                            throw new \RuntimeException('Malformed embedded Reapit image collection for property ' . $property->ReapitID);
+                        }
+                        $this->imageSynchroniser->sync($property, $images, false);
+                    } elseif (!empty($remote['featuredImageUrl'])) {
+                        throw new \RuntimeException(
+                            'Reapit omitted embedded images for property ' . $property->ReapitID
+                        );
+                    }
+                }
+
+                $count++;
+            }
+        }
+        // A limited run may not have seen every record. It must not advance
+        // the incremental checkpoint or interfere with subsequent full syncs.
+        if ($maxProperties === null && $propertyId === null) {
+            $state->LastSuccessful = $started;
+            $state->write();
+        }
+
+        return $count;
+    }
+
+    /**
+     * Re-fetch all currently marketable property IDs. Only remove stale local
+     * records after the complete remote listing has been fetched successfully.
+     */
+    public function reconcile(): int
+    {
+        $customer = $this->api->customerId();
+        $seen = [];
+        foreach ($this->api->pages('/properties', [
+            'lettingStatus' => ['toLet', 'tenancyCurrent'],
+            'internetAdvertising' => 'true',
+        ]) as $page) {
+            foreach ($page as $remote) {
+                if (is_array($remote) && isset($remote['id'])) {
+                    $seen[(string) $remote['id']] = true;
+                }
+            }
+        }
+        $this->lastReconciliationCount = count($seen);
+        $removed = 0;
+        foreach (Property::get()->filter('CustomerID', $customer) as $property) {
+            if (!isset($seen[$property->ReapitID])) {
+                $property->Available = false;
+                $property->write();
+                $removed++;
+            }
+        }
+        return $removed;
+    }
+}
