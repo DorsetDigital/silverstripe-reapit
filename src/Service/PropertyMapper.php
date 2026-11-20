@@ -28,9 +28,15 @@ class PropertyMapper
         $property->AddressLine3 = (string) ($address['line3'] ?? '');
         $property->AddressLine4 = (string) ($address['line4'] ?? '');
 
+        $fallbackTitle = implode(', ', array_filter([
+            self::nonEmptyText($address['line1'] ?? null),
+            self::nonEmptyText($address['line3'] ?? null),
+            self::nonEmptyText($address['line4'] ?? null),
+            self::nonEmptyText($address['postcode'] ?? null),
+        ], static fn (?string $part): bool => $part !== null));
+
         $property->Title = self::nonEmptyText($remote['strapline'] ?? null)
-            ?? self::nonEmptyText($address['line1'] ?? null)
-            ?? (string) ($remote['id'] ?? '');
+            ?? ($fallbackTitle !== '' ? $fallbackTitle : (string) ($remote['id'] ?? ''));
         $property->Summary = self::nonEmptyText($remote['summary'] ?? null) ?? '';
         $property->Description = self::nonEmptyText($remote['description'] ?? null) ?? '';
         $property->LongDescription = self::nonEmptyText($remote['longDescription'] ?? null) ?? '';
