@@ -334,3 +334,22 @@ npm run build
 ```
 
 For incremental development, use `npm run dev`. The small Vite build lives in `vite.config.js` and uses `client/src/gallery.js` and `client/src/photoswipe.css`. It is adapted from the frontend integration in `dorsetdigital/silverstripe-photoswipe`, but has no dependency on that module.
+
+## Property location maps
+
+Reapit's `address.geolocation` coordinates are imported to `Latitude`, `Longitude`
+and `HasGeolocation`. A property detail page with valid coordinates displays a
+MapLibre map using OpenFreeMap's Liberty style. The map module and MapLibre CSS
+are included only on detail pages with coordinates, and the renderer is
+dynamically imported when the map approaches the viewport. The map code and
+style depend on the external jsDelivr and OpenFreeMap services.
+
+To change the map style in the host site's YAML:
+
+```yaml
+DorsetDigital\Reapit\Model\Property:
+  map_style_url: 'https://tiles.openfreemap.org/styles/liberty'
+```
+
+After deploying, run `dev/build` and a full property import to populate
+coordinates for properties not subsequently modified in Reapit.

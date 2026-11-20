@@ -34,6 +34,9 @@ class Property extends DataObject
         'AddressLine3' => 'Varchar(255)',
         'AddressLine4' => 'Varchar(255)',
         'Postcode' => 'Varchar(32)',
+        'Latitude' => 'Decimal(10,7)',
+        'Longitude' => 'Decimal(10,7)',
+        'HasGeolocation' => 'Boolean',
         'Bedrooms' => 'Int',
         'Bathrooms' => 'Int',
         'Rent' => 'Decimal(12,2)',
@@ -60,6 +63,18 @@ class Property extends DataObject
     ];
 
     private static string $default_sort = '"MarketingDate" DESC, "ID" DESC';
+
+    private static string $map_style_url = 'https://tiles.openfreemap.org/styles/liberty';
+
+    public function getHasMapCoordinates(): bool
+    {
+        return (bool) $this->HasGeolocation;
+    }
+
+    public function getMapStyleURL(): string
+    {
+        return (string) $this->config()->get('map_style_url');
+    }
 
     public function getPhotographs()
     {

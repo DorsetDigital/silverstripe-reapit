@@ -128,6 +128,14 @@ class PropertyListingPageController extends \PageController
             Requirements::css('dorsetdigital/silverstripe-reapit:client/dist/photoswipe.css');
         }
 
+        if ($property->getHasMapCoordinates()) {
+            Requirements::javascript(
+                'dorsetdigital/silverstripe-reapit:client/js/property-map.js',
+                ['type' => 'module']
+            );
+            Requirements::css('https://cdn.jsdelivr.net/npm/maplibre-gl@6.16.0/dist/maplibre-gl.css');
+        }
+
         // Returning customised page data preserves the normal SiteTree layout.
         // Silverstripe selects PropertyListingPage_view.ss for this action.
         return $this->customise(['Property' => $property]);

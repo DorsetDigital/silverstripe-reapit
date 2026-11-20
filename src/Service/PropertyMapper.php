@@ -43,6 +43,17 @@ class PropertyMapper
         $property->PropertyTypes = self::stringList($remote['type'] ?? []);
         $property->PropertyStyles = self::stringList($remote['style'] ?? []);
         $property->Postcode = (string) ($address['postcode'] ?? '');
+
+        $geo = $address['geolocation'] ?? null;
+        $lat = is_array($geo) ? ($geo['latitude'] ?? null) : null;
+        $lon = is_array($geo) ? ($geo['longitude'] ?? null) : null;
+        $validCoordinates = is_numeric($lat) && is_numeric($lon)
+            && is_finite((float) $lat) && is_finite((float) $lon)
+            && (float) $lat >= -90 && (float) $lat <= 90
+            && (float) $lon >= -180 && (float) $lon <= 180;
+        $property->HasGeolocation = $validCoordinates;
+        $property->Latitude = $validCoordinates ? (float) $lat : 0;
+        $property->Longitude = $validCoordinates ? (float) $lon : 0;
         $property->Bedrooms = (int) ($remote['bedrooms'] ?? 0);
         $property->Bathrooms = (int) ($remote['bathrooms'] ?? 0);
         $property->Rent = is_numeric($letting['rent'] ?? null) ? (float) $letting['rent'] : 0;

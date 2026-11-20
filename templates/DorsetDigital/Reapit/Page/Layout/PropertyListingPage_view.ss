@@ -109,6 +109,17 @@
                         <div><dt>Reference</dt><dd>$ReapitID.XML</dd></div>
                     </dl>
                 </section>
+                <% if $HasMapCoordinates %>
+                    <section class="reapit-property-detail__section mb-5" aria-labelledby="reapit-property-map">
+                        <h2 id="reapit-property-map">Location map</h2>
+                        <div class="reapit-property-detail__map" data-reapit-map
+                            data-latitude="$Latitude.ATT"
+                            data-longitude="$Longitude.ATT"
+                            data-style-url="$MapStyleURL.ATT"
+                            role="region"
+                            aria-label="Map showing the property location"></div>
+                    </section>
+                <% end_if %>
             <% end_with %>
         </main>
 
@@ -149,6 +160,7 @@
                     <section class="reapit-property-detail__panel" aria-labelledby="reapit-property-location">
                         <h2 id="reapit-property-location">Location</h2>
                         <p><% if $BuildingName %><span>$BuildingName.XML</span><% end_if %> <% if $BuildingNumber %><span>$BuildingNumber.XML</span><% end_if %> <% if $AddressLine1 %><span>$AddressLine1.XML</span><% end_if %> <% if $AddressLine2 %><span>$AddressLine2.XML</span><% end_if %> <% if $AddressLine3 %><span>$AddressLine3.XML</span><% end_if %> <% if $AddressLine4 %><span>$AddressLine4.XML</span><% end_if %> <% if $Postcode %><span class="reapit-property-detail__postcode">$Postcode.XML</span><% end_if %></p>
+                        <% if $HasMapCoordinates %><p><a href="#reapit-property-map">View location map</a></p><% end_if %>
                     </section>
                 <% end_if %>
             <% end_with %>

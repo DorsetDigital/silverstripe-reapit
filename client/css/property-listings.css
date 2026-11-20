@@ -70,3 +70,6 @@
 .reapit-property-detail__document a:focus-visible{outline:3px solid currentColor;outline-offset:3px}
 .reapit-property-detail__document figcaption{margin-top:.45rem;color:#596578}
 .reapit-property-detail__document-links a{display:block;margin-top:.65rem;text-decoration:underline}
+
+.reapit-property-detail__map{width:100%;aspect-ratio:16/9;min-height:260px;background:#eef2f4;border-radius:.4rem;overflow:hidden}
+@media (max-width:575.98px){.reapit-property-detail__map{aspect-ratio:4/3;min-height:230px}}
