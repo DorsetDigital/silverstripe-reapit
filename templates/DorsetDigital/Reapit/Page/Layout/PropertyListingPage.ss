@@ -25,7 +25,7 @@
                     <a href="$Link.ATT" class="reapit-property-card__link" aria-label="View property: $Title.ATT">
                         <div class="reapit-property-card__image">
                             <% if $Photographs.First.Image %>
-                                <img src="$Images.First.Image.Fill(640,420).URL.ATT" alt="" loading="lazy">
+                                <img src="$Photographs.First.Image.Fill(640,420).URL.ATT" width="640" height="420" alt="" loading="lazy">
                             <% else %>
                                 <img src="$resourceURL('dorsetdigital/silverstripe-reapit:client/images/placeholder-640x420.svg')" alt="" loading="lazy" width="640" height="420">
                             <% end_if %>
