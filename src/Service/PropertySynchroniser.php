@@ -7,6 +7,7 @@ namespace DorsetDigital\Reapit\Service;
 use DorsetDigital\Reapit\Model\Property;
 use DorsetDigital\Reapit\Model\SyncState;
 use SilverStripe\Core\Injector\Injectable;
+use SilverStripe\Core\Config\Config;
 
 /**
  * Idempotent, resumable import; the checkpoint advances only after all pages succeed.
@@ -14,6 +15,9 @@ use SilverStripe\Core\Injector\Injectable;
 class PropertySynchroniser
 {
     use Injectable;
+
+    // An empty list means all internet-advertised letting statuses.
+    private static array $letting_statuses = [];
 
     private array $lastImportDetails = [];
     private int $lastReconciliationCount = 0;
@@ -59,10 +63,7 @@ class PropertySynchroniser
             $state->Channel = 'properties';
         }
         $started = gmdate('Y-m-d H:i:s');
-        $query = [
-            'lettingStatus' => ['toLet', 'tenancyCurrent'],
-            'internetAdvertising' => 'true',
-        ];
+        $query = $this->propertyQuery();
         if ($withImages) {
             $query['embed'] = 'images';
         }
@@ -136,10 +137,7 @@ class PropertySynchroniser
     {
         $customer = $this->api->customerId();
         $seen = [];
-        foreach ($this->api->pages('/properties', [
-            'lettingStatus' => ['toLet', 'tenancyCurrent'],
-            'internetAdvertising' => 'true',
-        ]) as $page) {
+        foreach ($this->api->pages('/properties', $this->propertyQuery()) as $page) {
             foreach ($page as $remote) {
                 if (is_array($remote) && isset($remote['id'])) {
                     $seen[(string) $remote['id']] = true;
@@ -157,4 +155,38 @@ class PropertySynchroniser
         }
         return $removed;
     }
+    /**
+     * Shared API filters for imports and reconciliation.
+     * Reject invalid configuration instead of silently omitting statuses.
+     *
+     * @return array<string, mixed>
+     */
+    private function propertyQuery(): array
+    {
+        $statuses = Config::inst()->get(self::class, 'letting_statuses');
+        if (!is_array($statuses) || !array_is_list($statuses)) {
+            throw new \InvalidArgumentException('Reapit letting_statuses must be a list of status codes.');
+        }
+
+        foreach ($statuses as $status) {
+            if (!is_string($status) || !in_array($status, Property::LETTING_STATUSES, true)) {
+                throw new \InvalidArgumentException(
+                    'Invalid Reapit letting status in letting_statuses: '
+                    . (is_scalar($status) ? var_export($status, true) : get_debug_type($status))
+                );
+            }
+        }
+
+        if (count($statuses) !== count(array_unique($statuses))) {
+            throw new \InvalidArgumentException('Reapit letting_statuses must not contain duplicate codes.');
+        }
+
+        $query = ['internetAdvertising' => 'true'];
+        if ($statuses !== []) {
+            $query['lettingStatus'] = $statuses;
+        }
+
+        return $query;
+    }
+
 }

@@ -64,6 +64,26 @@ class Property extends DataObject
 
     private static string $default_sort = '"MarketingDate" DESC, "ID" DESC';
 
+    /** Validated Reapit status codes, independent of translated display labels. */
+    public const LETTING_STATUSES = [
+        'toLet',
+        'toLetUnavailable',
+        'underOffer',
+        'underOfferUnavailable',
+        'arrangingTenancy',
+        'arrangingTenancyUnavailable',
+        'tenancyCurrent',
+        'tenancyCurrentUnavailable',
+        'tenancyFinished',
+        'tenancyCancelled',
+        'letByOtherAgent',
+        'letPrivately',
+        'withdrawn',
+        'marketAppraisal',
+        'provisional',
+        'sold',
+    ];
+
     private static string $map_style_url = 'https://tiles.openfreemap.org/styles/liberty';
 
     public function getHasMapCoordinates(): bool
@@ -110,10 +130,26 @@ class Property extends DataObject
      */
     public function getLettingStatusLabel(): string
     {
-        return match ((string) $this->LettingStatus) {
-            'toLet' => 'Available to rent',
-            'tenancyCurrent' => 'Currently let',
-            default => (string) $this->LettingStatus,
+        $status = (string) $this->LettingStatus;
+
+        return match ($status) {
+            'toLet' => _t(__CLASS__ . '.TO_LET', 'Available to rent'),
+            'toLetUnavailable' => _t(__CLASS__ . '.TO_LET_UNAVAILABLE', 'To let (unavailable)'),
+            'underOffer' => _t(__CLASS__ . '.UNDER_OFFER', 'Under offer'),
+            'underOfferUnavailable' => _t(__CLASS__ . '.UNDER_OFFER_UNAVAILABLE', 'Under offer (unavailable)'),
+            'arrangingTenancy' => _t(__CLASS__ . '.ARRANGING_TENANCY', 'Arranging tenancy'),
+            'arrangingTenancyUnavailable' => _t(__CLASS__ . '.ARRANGING_TENANCY_UNAVAILABLE', 'Arranging tenancy (unavailable)'),
+            'tenancyCurrent' => _t(__CLASS__ . '.TENANCY_CURRENT', 'Currently let'),
+            'tenancyCurrentUnavailable' => _t(__CLASS__ . '.TENANCY_CURRENT_UNAVAILABLE', 'Currently let (unavailable)'),
+            'tenancyFinished' => _t(__CLASS__ . '.TENANCY_FINISHED', 'Tenancy finished'),
+            'tenancyCancelled' => _t(__CLASS__ . '.TENANCY_CANCELLED', 'Tenancy cancelled'),
+            'letByOtherAgent' => _t(__CLASS__ . '.LET_BY_OTHER_AGENT', 'Let by another agent'),
+            'letPrivately' => _t(__CLASS__ . '.LET_PRIVATELY', 'Let privately'),
+            'withdrawn' => _t(__CLASS__ . '.WITHDRAWN', 'Withdrawn'),
+            'marketAppraisal' => _t(__CLASS__ . '.MARKET_APPRAISAL', 'Market appraisal'),
+            'provisional' => _t(__CLASS__ . '.PROVISIONAL', 'Provisional'),
+            'sold' => _t(__CLASS__ . '.SOLD', 'Sold'),
+            default => trim((string) preg_replace('/(?<=[a-z])(?=[A-Z])/', ' ', ucfirst($status))),
         };
     }
 

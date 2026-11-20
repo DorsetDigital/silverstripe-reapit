@@ -57,7 +57,6 @@ class InspectPropertyImagesTask extends BuildTask
 
         $api = Injector::inst()->get(ApiClient::class);
         $result = $api->get('/properties', [
-            'lettingStatus' => ['toLet', 'tenancyCurrent'],
             'internetAdvertising' => 'true',
             'embed' => 'images',
             'pageSize' => (int) $limit,
