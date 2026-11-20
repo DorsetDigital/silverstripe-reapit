@@ -1,5 +1,5 @@
 en:
-  'DorsetDigital\\Reapit\\Model\\Property':
+  'DorsetDigital\Reapit\Model\Property':
     TO_LET: 'Available to rent'
     TO_LET_UNAVAILABLE: 'To let (unavailable)'
     UNDER_OFFER: 'Under offer'
