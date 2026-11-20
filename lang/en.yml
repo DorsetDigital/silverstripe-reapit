@@ -1,0 +1,18 @@
+en:
+  'DorsetDigital\\Reapit\\Model\\Property':
+    TO_LET: 'Available to rent'
+    TO_LET_UNAVAILABLE: 'To let (unavailable)'
+    UNDER_OFFER: 'Under offer'
+    UNDER_OFFER_UNAVAILABLE: 'Under offer (unavailable)'
+    ARRANGING_TENANCY: 'Arranging tenancy'
+    ARRANGING_TENANCY_UNAVAILABLE: 'Arranging tenancy (unavailable)'
+    TENANCY_CURRENT: 'Currently let'
+    TENANCY_CURRENT_UNAVAILABLE: 'Currently let (unavailable)'
+    TENANCY_FINISHED: 'Tenancy finished'
+    TENANCY_CANCELLED: 'Tenancy cancelled'
+    LET_BY_OTHER_AGENT: 'Let by another agent'
+    LET_PRIVATELY: 'Let privately'
+    WITHDRAWN: 'Withdrawn'
+    MARKET_APPRAISAL: 'Market appraisal'
+    PROVISIONAL: 'Provisional'
+    SOLD: 'Sold'

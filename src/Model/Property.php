@@ -64,27 +64,24 @@ class Property extends DataObject
 
     private static string $default_sort = '"MarketingDate" DESC, "ID" DESC';
 
-    /**
-     * Supported Foundations letting statuses and their public labels.
-     * The same codes are used to validate project-level import filters.
-     */
-    public const LETTING_STATUS_LABELS = [
-        'toLet' => 'Available to rent',
-        'toLetUnavailable' => 'To let (unavailable)',
-        'underOffer' => 'Under offer',
-        'underOfferUnavailable' => 'Under offer (unavailable)',
-        'arrangingTenancy' => 'Arranging tenancy',
-        'arrangingTenancyUnavailable' => 'Arranging tenancy (unavailable)',
-        'tenancyCurrent' => 'Currently let',
-        'tenancyCurrentUnavailable' => 'Currently let (unavailable)',
-        'tenancyFinished' => 'Tenancy finished',
-        'tenancyCancelled' => 'Tenancy cancelled',
-        'letByOtherAgent' => 'Let by another agent',
-        'letPrivately' => 'Let privately',
-        'withdrawn' => 'Withdrawn',
-        'marketAppraisal' => 'Market appraisal',
-        'provisional' => 'Provisional',
-        'sold' => 'Sold',
+    /** Validated Reapit status codes, independent of translated display labels. */
+    public const LETTING_STATUSES = [
+        'toLet',
+        'toLetUnavailable',
+        'underOffer',
+        'underOfferUnavailable',
+        'arrangingTenancy',
+        'arrangingTenancyUnavailable',
+        'tenancyCurrent',
+        'tenancyCurrentUnavailable',
+        'tenancyFinished',
+        'tenancyCancelled',
+        'letByOtherAgent',
+        'letPrivately',
+        'withdrawn',
+        'marketAppraisal',
+        'provisional',
+        'sold',
     ];
 
     private static string $map_style_url = 'https://tiles.openfreemap.org/styles/liberty';
@@ -135,8 +132,25 @@ class Property extends DataObject
     {
         $status = (string) $this->LettingStatus;
 
-        return self::LETTING_STATUS_LABELS[$status]
-            ?? trim((string) preg_replace('/(?<=[a-z])(?=[A-Z])/', ' ', ucfirst($status)));
+        return match ($status) {
+            'toLet' => _t(__CLASS__ . '.TO_LET', 'Available to rent'),
+            'toLetUnavailable' => _t(__CLASS__ . '.TO_LET_UNAVAILABLE', 'To let (unavailable)'),
+            'underOffer' => _t(__CLASS__ . '.UNDER_OFFER', 'Under offer'),
+            'underOfferUnavailable' => _t(__CLASS__ . '.UNDER_OFFER_UNAVAILABLE', 'Under offer (unavailable)'),
+            'arrangingTenancy' => _t(__CLASS__ . '.ARRANGING_TENANCY', 'Arranging tenancy'),
+            'arrangingTenancyUnavailable' => _t(__CLASS__ . '.ARRANGING_TENANCY_UNAVAILABLE', 'Arranging tenancy (unavailable)'),
+            'tenancyCurrent' => _t(__CLASS__ . '.TENANCY_CURRENT', 'Currently let'),
+            'tenancyCurrentUnavailable' => _t(__CLASS__ . '.TENANCY_CURRENT_UNAVAILABLE', 'Currently let (unavailable)'),
+            'tenancyFinished' => _t(__CLASS__ . '.TENANCY_FINISHED', 'Tenancy finished'),
+            'tenancyCancelled' => _t(__CLASS__ . '.TENANCY_CANCELLED', 'Tenancy cancelled'),
+            'letByOtherAgent' => _t(__CLASS__ . '.LET_BY_OTHER_AGENT', 'Let by another agent'),
+            'letPrivately' => _t(__CLASS__ . '.LET_PRIVATELY', 'Let privately'),
+            'withdrawn' => _t(__CLASS__ . '.WITHDRAWN', 'Withdrawn'),
+            'marketAppraisal' => _t(__CLASS__ . '.MARKET_APPRAISAL', 'Market appraisal'),
+            'provisional' => _t(__CLASS__ . '.PROVISIONAL', 'Provisional'),
+            'sold' => _t(__CLASS__ . '.SOLD', 'Sold'),
+            default => trim((string) preg_replace('/(?<=[a-z])(?=[A-Z])/', ' ', ucfirst($status))),
+        };
     }
 
     public function getMetaTitle(): string
