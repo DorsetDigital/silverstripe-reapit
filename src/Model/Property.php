@@ -61,6 +61,21 @@ class Property extends DataObject
 
     private static string $default_sort = '"MarketingDate" DESC, "ID" DESC';
 
+    public function getPhotographs()
+    {
+        return $this->Images()->filter('Type', 'photograph');
+    }
+
+    public function getFloorPlans()
+    {
+        return $this->Images()->filter('Type', 'floorPlan');
+    }
+
+    public function getEPCImages()
+    {
+        return $this->Images()->filter('Type', 'epc');
+    }
+
     /**
      * Use the first published PropertyListingPage as the canonical frontend
      * route. Sites with multiple listing pages can override this method.

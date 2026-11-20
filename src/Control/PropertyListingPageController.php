@@ -120,7 +120,7 @@ class PropertyListingPageController extends \PageController
 
         $this->extend('updatePropertyDetail', $property);
 
-        if ($property->Images()->exists()) {
+        if ($property->getPhotographs()->exists() || $property->getFloorPlans()->exists() || $property->getEPCImages()->exists()) {
             Requirements::javascript(
                 'dorsetdigital/silverstripe-reapit:client/dist/gallery.js',
                 ['type' => 'module']

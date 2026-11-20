@@ -16,6 +16,7 @@ class PropertyImage extends DataObject
         'RemoteURL' => 'Text',
         'ReapitETag' => 'Varchar(255)',
         'Caption' => 'Varchar(255)',
+        'Type' => 'Varchar(50)',
         'Position' => 'Int',
     ];
 
