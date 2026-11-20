@@ -32,7 +32,7 @@
                         </div>
                         <div class="reapit-property-card__body">
                             <h2>$Title.XML</h2>
-                            <% if $Address %><p>$Address.XML</p><% end_if %>
+                            <p class="reapit-property-card__address"><% if $BuildingName %><span>$BuildingName.XML</span><% end_if %> <% if $BuildingNumber %><span>$BuildingNumber.XML</span><% end_if %> <% if $AddressLine1 %><span>$AddressLine1.XML</span><% end_if %> <% if $AddressLine2 %><span>$AddressLine2.XML</span><% end_if %> <% if $AddressLine3 %><span>$AddressLine3.XML</span><% end_if %> <% if $AddressLine4 %><span>$AddressLine4.XML</span><% end_if %></p>
                             <% if $Rent %><p class="reapit-property-card__rent">&pound;$Rent.Nice <% if $RentFrequency %>/ $RentFrequency.XML<% end_if %></p><% end_if %>
                             <p>
                                 <% if $Bedrooms %>$Bedrooms bedroom<% if $Bedrooms != 1 %>s<% end_if %><% end_if %>

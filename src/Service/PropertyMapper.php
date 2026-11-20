@@ -21,19 +21,16 @@ class PropertyMapper
         $letting = $remote['letting'] ?? [];
         $letting = is_array($letting) ? $letting : [];
 
-        $street = array_filter([
-            $address['buildingName'] ?? null,
-            $address['buildingNumber'] ?? null,
-            $address['line1'] ?? null,
-            $address['line2'] ?? null,
-            $address['line3'] ?? null,
-            $address['line4'] ?? null,
-        ], static fn ($part): bool => is_scalar($part) && trim((string) $part) !== '');
+        $property->BuildingName = (string) ($address['buildingName'] ?? '');
+        $property->BuildingNumber = (string) ($address['buildingNumber'] ?? '');
+        $property->AddressLine1 = (string) ($address['line1'] ?? '');
+        $property->AddressLine2 = (string) ($address['line2'] ?? '');
+        $property->AddressLine3 = (string) ($address['line3'] ?? '');
+        $property->AddressLine4 = (string) ($address['line4'] ?? '');
 
-        $property->Address = implode(', ', $street);
-        $strapline = self::nonEmptyText($remote['strapline'] ?? null);
-        $property->Title = $strapline
-            ?? ($property->Address !== '' ? $property->Address : (string) ($remote['id'] ?? ''));
+        $property->Title = self::nonEmptyText($remote['strapline'] ?? null)
+            ?? self::nonEmptyText($address['line1'] ?? null)
+            ?? (string) ($remote['id'] ?? '');
         $property->Summary = self::nonEmptyText($remote['summary'] ?? null) ?? '';
         $property->Description = self::nonEmptyText($remote['description'] ?? null) ?? '';
         $property->LongDescription = self::nonEmptyText($remote['longDescription'] ?? null) ?? '';

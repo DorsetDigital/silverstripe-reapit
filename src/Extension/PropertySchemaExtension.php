@@ -87,8 +87,16 @@ class PropertySchemaExtension extends Extension
             ->setDescription(trim(strip_tags((string) $record->Description)) ?: null)
             ->setIdentifier((string) $record->ReapitID);
 
+        $streetAddress = implode(', ', array_filter([
+            (string) $record->BuildingName,
+            (string) $record->BuildingNumber,
+            (string) $record->AddressLine1,
+            (string) $record->AddressLine2,
+            (string) $record->AddressLine3,
+            (string) $record->AddressLine4,
+        ], static fn (string $value): bool => trim($value) !== ''));
         $address = array_filter([
-            'streetAddress' => (string) $record->Address,
+            'streetAddress' => $streetAddress,
             'postalCode' => (string) $record->Postcode,
         ], static fn (string $value): bool => $value !== '');
         if ($address) {
