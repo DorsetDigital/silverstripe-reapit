@@ -60,7 +60,7 @@
                                         <% with $Image %>
                                             <% with $ScaleMaxWidth(1600) %>
                                                 <a href="$URL.ATT" data-pswp-width="$Width" data-pswp-height="$Height" aria-label="View floor plan in gallery">
-                                                    <% with $Up.ScaleMaxWidth(750) %>
+                                                    <% with $Up.ScaleMaxWidth(500) %>
                                                         <img src="$URL.ATT" width="$Width" height="$Height" alt="Property floor plan" loading="lazy" decoding="async">
                                                     <% end_with %>
                                                 </a>
@@ -84,7 +84,7 @@
                                         <% with $Image %>
                                             <% with $ScaleMaxWidth(1600) %>
                                                 <a href="$URL.ATT" data-pswp-width="$Width" data-pswp-height="$Height" aria-label="View EPC graph in gallery">
-                                                    <% with $Up.ScaleMaxWidth(750) %>
+                                                    <% with $Up.ScaleMaxWidth(500) %>
                                                         <img src="$URL.ATT" width="$Width" height="$Height" alt="EPC rating graph" loading="lazy" decoding="async">
                                                     <% end_with %>
                                                 </a>
