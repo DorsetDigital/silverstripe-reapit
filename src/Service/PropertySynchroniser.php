@@ -169,7 +169,7 @@ class PropertySynchroniser
         }
 
         foreach ($statuses as $status) {
-            if (!is_string($status) || !!in_array($status, Property::LETTING_STATUSES, true)) {
+            if (!is_string($status) || !in_array($status, Property::LETTING_STATUSES, true)) {
                 throw new \InvalidArgumentException(
                     'Invalid Reapit letting status in letting_statuses: '
                     . (is_scalar($status) ? var_export($status, true) : get_debug_type($status))
