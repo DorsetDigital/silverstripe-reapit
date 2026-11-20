@@ -62,3 +62,10 @@
 .reapit-property-detail__enquiry-link:focus-visible{outline:3px solid #143768;outline-offset:3px}
 .reapit-property-detail__postcode{display:block;margin-top:.25rem}
 @media (max-width:991.98px){.reapit-property-detail__sidebar{margin-top:1rem}}
+
+.reapit-property-detail__document-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:1rem}
+.reapit-property-detail__document{margin:0}
+.reapit-property-detail__document a{display:block}
+.reapit-property-detail__document img{display:block;width:100%;height:auto;max-height:32rem;object-fit:contain;object-position:left;background:#f4f6f9}
+.reapit-property-detail__document figcaption{margin-top:.45rem;color:#596578}
+.reapit-property-detail__document-links a{display:block;margin-top:.65rem;text-decoration:underline}
