@@ -209,6 +209,19 @@ incremental feed, full reconciliation is intentionally not frequent.
 Only schedule it after testing against the customer dataset and assessing API
 usage. It runs an applied reconciliation across every available property.
 
+## Structured addresses
+
+Reapit address components are stored separately as `BuildingName`, `BuildingNumber`,
+`AddressLine1`–`AddressLine4`, and `Postcode`. The previously stored combined
+`Address` field has been removed. Project-specific formatting (including suppressing
+house numbers) belongs in the consuming site's extension and templates, not the
+import mapper. The module's default templates render individual fields directly.
+
+Existing installations must run `dev/build`, then a **full property import**
+(`vendor/bin/sake dev/tasks/reapit-import`) to populate the new fields,
+as incremental sync may not retrieve unchanged properties. Any project templates
+or extensions using `$Address` must be updated. Existing slugs are preserved.
+
 ## Frontend page
 
 Create a **Property listings** page in the Silverstripe SiteTree. The module supplies a

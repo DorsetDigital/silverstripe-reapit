@@ -8,9 +8,7 @@
     <% with $Property %>
         <header class="reapit-property-detail__header mb-4">
             <h1>$Title.XML</h1>
-            <% if $Address %>
-                <p class="reapit-property-detail__address">$Address.XML<% if $Postcode %>, $Postcode.XML<% end_if %></p>
-            <% end_if %>
+            <p class="reapit-property-detail__address"><% if $BuildingName %><span>$BuildingName.XML</span><% end_if %> <% if $BuildingNumber %><span>$BuildingNumber.XML</span><% end_if %> <% if $AddressLine1 %><span>$AddressLine1.XML</span><% end_if %> <% if $AddressLine2 %><span>$AddressLine2.XML</span><% end_if %> <% if $AddressLine3 %><span>$AddressLine3.XML</span><% end_if %> <% if $AddressLine4 %><span>$AddressLine4.XML</span><% end_if %> <% if $Postcode %><span>$Postcode.XML</span><% end_if %></p>
         </header>
     <% end_with %>
 
@@ -91,10 +89,10 @@
             </div>
 
             <% with $Property %>
-                <% if $Address %>
+                <% if $Postcode || $AddressLine1 || $AddressLine2 || $AddressLine3 || $AddressLine4 || $BuildingName || $BuildingNumber %>
                     <section class="reapit-property-detail__panel" aria-labelledby="reapit-property-location">
                         <h2 id="reapit-property-location">Location</h2>
-                        <p>$Address.XML<% if $Postcode %><span class="reapit-property-detail__postcode">$Postcode.XML</span><% end_if %></p>
+                        <p><% if $BuildingName %><span>$BuildingName.XML</span><% end_if %> <% if $BuildingNumber %><span>$BuildingNumber.XML</span><% end_if %> <% if $AddressLine1 %><span>$AddressLine1.XML</span><% end_if %> <% if $AddressLine2 %><span>$AddressLine2.XML</span><% end_if %> <% if $AddressLine3 %><span>$AddressLine3.XML</span><% end_if %> <% if $AddressLine4 %><span>$AddressLine4.XML</span><% end_if %> <% if $Postcode %><span class="reapit-property-detail__postcode">$Postcode.XML</span><% end_if %></p>
                     </section>
                 <% end_if %>
             <% end_with %>

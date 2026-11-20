@@ -22,10 +22,7 @@ class PropertySlugger
         }
 
         $filter = URLSegmentFilter::create();
-        $name = trim(implode(' ', array_filter([
-            (string) $property->Title,
-            (string) $property->Address,
-        ])));
+        $name = trim((string) $property->Title);
         $base = trim(substr($filter->filter($name), 0, 170), '-');
         if ($base === '') {
             $base = 'property';
