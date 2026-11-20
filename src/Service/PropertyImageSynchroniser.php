@@ -95,6 +95,7 @@ class PropertyImageSynchroniser
             $record->RemoteURL = $url;
             $record->ReapitETag = $etag;
             $record->Caption = is_string($metadata['caption'] ?? null) ? $metadata['caption'] : '';
+            $record->Type = is_string($metadata['type'] ?? null) ? $metadata['type'] : '';
             $record->Position = is_numeric($metadata['order'] ?? null) ? (int) $metadata['order'] : 0;
             $record->write();
         }
