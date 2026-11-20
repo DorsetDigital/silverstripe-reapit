@@ -64,6 +64,29 @@ class Property extends DataObject
 
     private static string $default_sort = '"MarketingDate" DESC, "ID" DESC';
 
+    /**
+     * Supported Foundations letting statuses and their public labels.
+     * The same codes are used to validate project-level import filters.
+     */
+    public const LETTING_STATUS_LABELS = [
+        'toLet' => 'Available to rent',
+        'toLetUnavailable' => 'To let (unavailable)',
+        'underOffer' => 'Under offer',
+        'underOfferUnavailable' => 'Under offer (unavailable)',
+        'arrangingTenancy' => 'Arranging tenancy',
+        'arrangingTenancyUnavailable' => 'Arranging tenancy (unavailable)',
+        'tenancyCurrent' => 'Currently let',
+        'tenancyCurrentUnavailable' => 'Currently let (unavailable)',
+        'tenancyFinished' => 'Tenancy finished',
+        'tenancyCancelled' => 'Tenancy cancelled',
+        'letByOtherAgent' => 'Let by another agent',
+        'letPrivately' => 'Let privately',
+        'withdrawn' => 'Withdrawn',
+        'marketAppraisal' => 'Market appraisal',
+        'provisional' => 'Provisional',
+        'sold' => 'Sold',
+    ];
+
     private static string $map_style_url = 'https://tiles.openfreemap.org/styles/liberty';
 
     public function getHasMapCoordinates(): bool
@@ -112,25 +135,8 @@ class Property extends DataObject
     {
         $status = (string) $this->LettingStatus;
 
-        return match ($status) {
-            'toLet' => 'Available to rent',
-            'toLetUnavailable' => 'To let (unavailable)',
-            'underOffer' => 'Under offer',
-            'underOfferUnavailable' => 'Under offer (unavailable)',
-            'arrangingTenancy' => 'Arranging tenancy',
-            'arrangingTenancyUnavailable' => 'Arranging tenancy (unavailable)',
-            'tenancyCurrent' => 'Currently let',
-            'tenancyCurrentUnavailable' => 'Currently let (unavailable)',
-            'tenancyFinished' => 'Tenancy finished',
-            'tenancyCancelled' => 'Tenancy cancelled',
-            'letByOtherAgent' => 'Let by another agent',
-            'letPrivately' => 'Let privately',
-            'withdrawn' => 'Withdrawn',
-            'marketAppraisal' => 'Market appraisal',
-            'provisional' => 'Provisional',
-            'sold' => 'Sold',
-            default => trim((string) preg_replace('/(?<=[a-z])(?=[A-Z])/', ' ', ucfirst($status))),
-        };
+        return self::LETTING_STATUS_LABELS[$status]
+            ?? trim((string) preg_replace('/(?<=[a-z])(?=[A-Z])/', ' ', ucfirst($status)));
     }
 
     public function getMetaTitle(): string

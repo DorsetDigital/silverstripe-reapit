@@ -227,6 +227,35 @@ incremental feed, full reconciliation is intentionally not frequent.
 Only schedule it after testing against the customer dataset and assessing API
 usage. It runs an applied reconciliation across every available property.
 
+
+## Configuring imported letting statuses
+
+By default, the importer requests **all** Reapit properties with
+`internetAdvertising=true`, irrespective of letting status.
+
+For projects that only want certain letting statuses, configure an explicit
+allow-list in the consuming site's YAML:
+
+```yaml
+DorsetDigital\Reapit\Service\PropertySynchroniser:
+  letting_statuses:
+    - toLet
+    - underOffer
+    - arrangingTenancy
+    - tenancyCurrent
+```
+
+An empty list (`letting_statuses: []`) means no letting-status restriction.
+The importer and reconciliation use the same query filter. Invalid or duplicate
+codes cause a configuration error rather than silently excluding properties.
+The supported codes and their display labels are maintained in
+`Property::LETTING_STATUS_LABELS`.
+
+After changing the filter, run a full property import and reconciliation to
+pick up newly included properties and hide locally stored properties no longer
+matching the selection. A targeted `propertyId` import deliberately bypasses
+collection filters.
+
 ## Structured addresses
 
 Reapit address components are stored separately as `BuildingName`, `BuildingNumber`,
