@@ -63,8 +63,8 @@
 .reapit-property-detail__postcode{display:block;margin-top:.25rem}
 @media (max-width:991.98px){.reapit-property-detail__sidebar{margin-top:1rem}}
 
-.reapit-property-detail__document-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:1.5rem;align-items:start}
-.reapit-property-detail__document{margin:0;min-width:0}
+.reapit-property-detail__document-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),500px));gap:1.5rem;align-items:start}
+.reapit-property-detail__document{margin:0;min-width:0;max-width:500px}
 .reapit-property-detail__document a{display:inline-block;max-width:100%;vertical-align:top}
 .reapit-property-detail__document img{display:block;width:auto;height:auto;max-width:100%;max-height:32rem}
 .reapit-property-detail__document a:focus-visible{outline:3px solid currentColor;outline-offset:3px}
