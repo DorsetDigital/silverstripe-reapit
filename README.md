@@ -81,6 +81,24 @@ records unless they are separately cleared.
 
 Schedule `DorsetDigital\Reapit\Job\PropertySyncJob` (e.g. hourly) and `DorsetDigital\Reapit\Job\ReconcileJob` (e.g. daily) through QueuedJobs. This module does not silently add jobs on every request.
 
+## Clearing local imported data
+
+For a clean resynchronisation of the **configured Reapit customer**, use:
+
+```bash
+ddev sake dev/tasks/reapit-clear-properties
+```
+
+This command removes imported
+`Property` records and their `PropertyImage` relations via Silverstripe's ORM,
+including the module-managed image assets. It also deletes that customer's
+property and image `SyncState` checkpoints so subsequent syncs start from
+scratch. It does not delete site pages or QueuedJobs records.
+
+Disable scheduled Reapit jobs while clearing and rebuilding the local copy.
+After clearing, run `ddev sake dev/tasks/reapit-import` and
+`ddev sake dev/tasks/reapit-sync-images "all=1"` to reimport the data.
+
 ## Recurring jobs and monitoring
 
 QueuedJobs' default-job configuration ensures `ReapitCaretakerJob` is present. Run the standard QueuedJobs queue processor regularly (for example, each minute); the caretaker runs every 300 seconds by default.
