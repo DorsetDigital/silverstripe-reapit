@@ -53,13 +53,19 @@
                 <% if $FloorPlans.Count %>
                     <section class="reapit-property-detail__section reapit-property-detail__documents mb-5" aria-labelledby="reapit-property-floorplans">
                         <h2 id="reapit-property-floorplans">Floor plans</h2>
-                        <div class="reapit-property-detail__document-grid">
+                        <div class="reapit-property-detail__document-grid" data-reapit-gallery aria-label="Floor plans">
                             <% loop $FloorPlans %>
                                 <% if $Image %>
                                     <figure class="reapit-property-detail__document">
-                                        <a href="$Image.URL.ATT" target="_blank" rel="noopener noreferrer" aria-label="View floor plan<% if $Caption %>: $Caption.ATT<% end_if %>">
-                                            <img src="$Image.ScaleMaxWidth(750).URL.ATT" alt="<% if $Caption %>$Caption.ATT<% else %>Property floor plan<% end_if %>" loading="lazy">
-                                        </a>
+                                        <% with $Image %>
+                                            <% with $ScaleMaxWidth(1600) %>
+                                                <a href="$URL.ATT" data-pswp-width="$Width" data-pswp-height="$Height" aria-label="View floor plan in gallery">
+                                                    <% with $Up.ScaleMaxWidth(750) %>
+                                                        <img src="$URL.ATT" width="$Width" height="$Height" alt="Property floor plan" loading="lazy" decoding="async">
+                                                    <% end_with %>
+                                                </a>
+                                            <% end_with %>
+                                        <% end_with %>
                                         <% if $Caption %><figcaption>$Caption.XML</figcaption><% end_if %>
                                     </figure>
                                 <% end_if %>
@@ -71,13 +77,19 @@
                 <% if $EPCImages.Count %>
                     <section class="reapit-property-detail__section reapit-property-detail__documents mb-5" aria-labelledby="reapit-property-epc">
                         <h2 id="reapit-property-epc">Energy performance certificate (EPC)</h2>
-                        <div class="reapit-property-detail__document-grid">
+                        <div class="reapit-property-detail__document-grid" data-reapit-gallery aria-label="Energy performance certificate (EPC)">
                             <% loop $EPCImages %>
                                 <% if $Image %>
                                     <figure class="reapit-property-detail__document">
-                                        <a href="$Image.URL.ATT" target="_blank" rel="noopener noreferrer" aria-label="View EPC graph<% if $Caption %>: $Caption.ATT<% end_if %>">
-                                            <img src="$Image.ScaleMaxWidth(750).URL.ATT" alt="<% if $Caption %>$Caption.ATT<% else %>EPC rating graph<% end_if %>" loading="lazy">
-                                        </a>
+                                        <% with $Image %>
+                                            <% with $ScaleMaxWidth(1600) %>
+                                                <a href="$URL.ATT" data-pswp-width="$Width" data-pswp-height="$Height" aria-label="View EPC graph in gallery">
+                                                    <% with $Up.ScaleMaxWidth(750) %>
+                                                        <img src="$URL.ATT" width="$Width" height="$Height" alt="EPC rating graph" loading="lazy" decoding="async">
+                                                    <% end_with %>
+                                                </a>
+                                            <% end_with %>
+                                        <% end_with %>
                                         <% if $Caption %><figcaption>$Caption.XML</figcaption><% end_if %>
                                     </figure>
                                 <% end_if %>
