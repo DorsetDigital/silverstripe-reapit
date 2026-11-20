@@ -7,7 +7,6 @@ namespace DorsetDigital\Reapit\Task;
 use DorsetDigital\Reapit\Model\Property;
 use DorsetDigital\Reapit\Model\SyncState;
 use DorsetDigital\Reapit\Service\ApiClient;
-use SilverStripe\Control\Director;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
 
@@ -25,15 +24,6 @@ class ClearPropertiesTask extends BuildTask
 
     public function run($request): void
     {
-        if (!Director::is_cli()) {
-            throw new \RuntimeException('This destructive task can only be run from the command line.');
-        }
-
-        if ($request->getVar('confirm') !== '1') {
-            echo "No changes made. Run with confirm=1 to delete imported properties and images.\n";
-            return;
-        }
-
         $customer = Injector::inst()->get(ApiClient::class)->customerId();
         $properties = Property::get()->filter('CustomerID', $customer);
         $propertyCount = 0;

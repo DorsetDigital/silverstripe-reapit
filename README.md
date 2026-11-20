@@ -86,10 +86,10 @@ Schedule `DorsetDigital\Reapit\Job\PropertySyncJob` (e.g. hourly) and `DorsetDig
 For a clean resynchronisation of the **configured Reapit customer**, use:
 
 ```bash
-ddev sake dev/tasks/reapit-clear-properties "confirm=1"
+ddev sake dev/tasks/reapit-clear-properties
 ```
 
-This command is CLI-only and requires `confirm=1`. It removes imported
+This command removes imported
 `Property` records and their `PropertyImage` relations via Silverstripe's ORM,
 including the module-managed image assets. It also deletes that customer's
 property and image `SyncState` checkpoints so subsequent syncs start from
