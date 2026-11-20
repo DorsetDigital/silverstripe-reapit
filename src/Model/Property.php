@@ -110,10 +110,26 @@ class Property extends DataObject
      */
     public function getLettingStatusLabel(): string
     {
-        return match ((string) $this->LettingStatus) {
+        $status = (string) $this->LettingStatus;
+
+        return match ($status) {
             'toLet' => 'Available to rent',
+            'toLetUnavailable' => 'To let (unavailable)',
+            'underOffer' => 'Under offer',
+            'underOfferUnavailable' => 'Under offer (unavailable)',
+            'arrangingTenancy' => 'Arranging tenancy',
+            'arrangingTenancyUnavailable' => 'Arranging tenancy (unavailable)',
             'tenancyCurrent' => 'Currently let',
-            default => (string) $this->LettingStatus,
+            'tenancyCurrentUnavailable' => 'Currently let (unavailable)',
+            'tenancyFinished' => 'Tenancy finished',
+            'tenancyCancelled' => 'Tenancy cancelled',
+            'letByOtherAgent' => 'Let by another agent',
+            'letPrivately' => 'Let privately',
+            'withdrawn' => 'Withdrawn',
+            'marketAppraisal' => 'Market appraisal',
+            'provisional' => 'Provisional',
+            'sold' => 'Sold',
+            default => trim((string) preg_replace('/(?<=[a-z])(?=[A-Z])/', ' ', ucfirst($status))),
         };
     }
 

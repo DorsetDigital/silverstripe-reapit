@@ -60,7 +60,6 @@ class PropertySynchroniser
         }
         $started = gmdate('Y-m-d H:i:s');
         $query = [
-            'lettingStatus' => ['toLet', 'tenancyCurrent'],
             'internetAdvertising' => 'true',
         ];
         if ($withImages) {
@@ -137,7 +136,6 @@ class PropertySynchroniser
         $customer = $this->api->customerId();
         $seen = [];
         foreach ($this->api->pages('/properties', [
-            'lettingStatus' => ['toLet', 'tenancyCurrent'],
             'internetAdvertising' => 'true',
         ]) as $page) {
             foreach ($page as $remote) {
