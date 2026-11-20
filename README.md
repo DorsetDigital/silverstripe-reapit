@@ -259,13 +259,13 @@ collection filters.
 ### Translating letting-status labels
 
 The default labels use Silverstripe i18n keys in
-`DorsetDigital\\Reapit\\Model\\Property`. A consuming project can override the
+`DorsetDigital\Reapit\Model\Property`. A consuming project can override the
 English labels or supply other languages using its standard `lang/*.yml`
 translation files, for example in `app/lang/en.yml`:
 
 ```yaml
 en:
-  'DorsetDigital\\Reapit\\Model\\Property':
+  'DorsetDigital\Reapit\Model\Property':
     UNDER_OFFER: 'Let agreed'
     ARRANGING_TENANCY: 'Let agreed'
 ```
