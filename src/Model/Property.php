@@ -37,6 +37,7 @@ class Property extends DataObject
         'Latitude' => 'Decimal(10,7)',
         'Longitude' => 'Decimal(10,7)',
         'HasGeolocation' => 'Boolean',
+        'ImagesInitialised' => 'Boolean',
         'Bedrooms' => 'Int',
         'Bathrooms' => 'Int',
         'Rent' => 'Decimal(12,2)',
