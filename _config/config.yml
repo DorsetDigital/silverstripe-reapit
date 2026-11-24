@@ -17,6 +17,7 @@ SilverStripe\Core\Injector\Injector:
     constructor:
       api: '%$DorsetDigital\Reapit\Service\ApiClient'
       images: '%$DorsetDigital\Reapit\Service\PropertyImageSynchroniser'
+      reconciler: '%$DorsetDigital\Reapit\Service\PropertyImageReconciler'
   DorsetDigital\Reapit\Service\PropertyImageReconciler:
     constructor:
       api: '%$DorsetDigital\Reapit\Service\ApiClient'

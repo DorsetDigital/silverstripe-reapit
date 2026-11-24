@@ -19,12 +19,13 @@ class PropertyImageFeedSynchroniser
 {
     public function __construct(
         private readonly ApiClient $api,
-        private readonly PropertyImageSynchroniser $images
+        private readonly PropertyImageSynchroniser $images,
+        private readonly PropertyImageReconciler $reconciler
     ) {
     }
 
     /**
-     * @return array{properties:int, changed:int, downloaded:int}
+     * @return array{properties:int, changed:int, downloaded:int, initialised:int}
      */
     public function sync(?int $maxProperties = null, ?string $propertyId = null): array
     {
@@ -63,8 +64,20 @@ class PropertyImageFeedSynchroniser
         $processed = 0;
         $changed = 0;
         $downloaded = 0;
+        $initialised = 0;
 
         foreach ($properties as $property) {
+            // A property's images can predate its first inclusion in the
+            // property feed. The modified-image feed cannot bootstrap them.
+            // Also initialise previously imported properties after upgrading.
+            if (!$property->ImagesInitialised) {
+                $initial = $this->reconciler->reconcile($property->ReapitID, apply: true);
+                $downloaded += $initial['downloaded'];
+                $property->ImagesInitialised = true;
+                $property->write();
+                $initialised++;
+            }
+
             $batch[$property->ReapitID] = $property;
             if (count($batch) === 100) {
                 [$delta, $new] = $this->syncBatch($batch, $query);
@@ -97,7 +110,7 @@ class PropertyImageFeedSynchroniser
             $state->write();
         }
 
-        return ['properties' => $processed, 'changed' => $changed, 'downloaded' => $downloaded];
+        return ['properties' => $processed, 'changed' => $changed, 'downloaded' => $downloaded, 'initialised' => $initialised];
     }
 
     /**

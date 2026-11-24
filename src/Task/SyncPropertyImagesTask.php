@@ -45,8 +45,9 @@ class SyncPropertyImagesTask extends BuildTask
 
         $result = Injector::inst()->get(PropertyImageFeedSynchroniser::class)->sync($limit, $propertyId);
         echo sprintf(
-            "Checked %d properties; %d changed image records; %d downloaded%s.\n",
+            "Checked %d properties; %d image inventories initialised; %d changed image records; %d downloaded%s.\n",
             $result['properties'],
+            $result['initialised'],
             $result['changed'],
             $result['downloaded'],
             $all === '1' ? ' (full run, checkpoint advanced)' : ' (test run, checkpoint unchanged)'

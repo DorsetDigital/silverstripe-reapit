@@ -35,6 +35,7 @@ class PropertyImageSyncJob extends RecurringReapitJob
         try {
             $result = Injector::inst()->get(PropertyImageFeedSynchroniser::class)->sync();
             $this->addMessage('Properties checked: ' . $result['properties']);
+            $this->addMessage('Image inventories initialised: ' . $result['initialised']);
             $this->addMessage('Changed image records: ' . $result['changed']);
             $this->addMessage('Images downloaded: ' . $result['downloaded']);
             $this->addMessage(sprintf('Completed in %.1f seconds.', microtime(true) - $started));

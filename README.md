@@ -400,3 +400,16 @@ DorsetDigital\Reapit\Model\Property:
 
 After deploying, run `dev/build` and a full property import to populate
 coordinates for properties not subsequently modified in Reapit.
+
+### Initial image inventory and incremental updates
+
+The scheduled image sync automatically retrieves the complete image collection
+for each available imported property **once**, including properties imported
+before this behaviour was introduced. This populates images that predate the
+property's inclusion in the local feed. The `ImagesInitialised` flag is set
+only after the complete inventory has been fetched and synchronised successfully,
+including when Reapit returns zero images. Later runs use the modified-image
+feed; the regular full reconciliation job remains available for detecting
+subsequent removals or gaps. No production CLI action is needed beyond the
+normal deployment/schema update and enabled scheduled image job.
+
